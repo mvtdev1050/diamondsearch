@@ -19,7 +19,7 @@ Route::view('/', 'welcome');
 
 Route::get('/auth', 'AppController@auth');
 Route::get('/callback', 'AppController@callback');
-Route::post('/runapi/{id}', 'AppController@runApi');
+Route::post('/backend/admin-product', 'BackendController@adminProduct');
 
 Route::post('/backend/save-setting', 'BackendController@saveSetting');
 Route::get('/dashboard', 'PageController@viewDashboard');

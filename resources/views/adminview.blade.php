@@ -31,9 +31,7 @@
     @if (!empty($setting)) 
         <script>
             window.option = "{{$setting['column_option']}}";
-            window.weight = "{{$setting['font_weight']}}";
             window.size = "{{$setting['font_size']}}";
-            window.family = "{{$setting['font_family']}}";
             window.color = "{{$setting['color']}}";
         </script>
     @endif

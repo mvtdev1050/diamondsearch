@@ -1,10 +1,18 @@
 :root {
-    --color: #000;
+    --color: rgba(0, 0, 0, 1);
     --size: 14px; 
-    --weight: 600; 
-    --family: 'Arial Sans-Serif'; 
   }
-  
+
+body {
+    background: #fff;
+}
+div#searchPage {
+    font-size:var(--size);
+    color:var(--color);
+}
+div#searchPage div:empty {
+    display: block;
+}
 
 @media (min-width: 576px) {
     .cust-container {
@@ -36,12 +44,6 @@
     }
 }
 
-body {
-    background: #fff;
-}
-div#searchPage div:empty {
-    display: block;
-}
 .cust-container {
     width: 100%;
     margin: 0 auto;
@@ -53,6 +55,7 @@ div#searchPage div:empty {
 
 .search-header .title {
     font-size: 30px;
+    color: #000;
 }
 
 .search-header {
@@ -69,8 +72,7 @@ div#searchPage div:empty {
 
 .diamond-search .option-title {
     margin: 0 0 20px;
-    font-size: var(--size);
-    font-weight: var(--weight);
+    color:#000;
 }
 
 .diamond-search .search-options .inner-search-options .shapes ul {
@@ -99,8 +101,6 @@ div#searchPage div:empty {
 .diamond-search .search-options .inner-search-options .shapes ul li .text {
     cursor: pointer;
     margin-top: 10px;
-    font-weight: var(--weight);
-    font-size: var(--size);
     -moz-transition: 0.2s ease-in-out;
     -o-transition: 0.2s ease-in-out;
     -webkit-transition: 0.2s ease-in-out;
@@ -136,7 +136,7 @@ div#searchPage div:empty {
 }
 
 .range-area .half-parent>label {
-    font-weight: var(--weight);
+    font-weight: 600;
     font-size: 120%;
 }
 
@@ -162,9 +162,10 @@ div#searchPage div:empty {
 
 /* SLider css */
 .rc-slider-rail {
-    background-color: #4d4d4d;
+    background-color: var(--color);
     height: 7px;
     border-radius: 0;
+    opacity: 0.5;
 }
 
 .rc-slider-track {
@@ -217,7 +218,7 @@ div#searchPage div:empty {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: var(--weight);
+    font-weight: 500;
 }
 
 .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
@@ -233,6 +234,7 @@ div#searchPage div:empty {
     outline: none;
 }
 
+
 .value-box input {
     margin: 30px 0 10px 0;
     padding: 10px;
@@ -242,18 +244,18 @@ div#searchPage div:empty {
     max-width: 95px;
     text-align: center;
     background: transparent;
-    font-weight: var(--weight);
-    font-size: var(--size);
+    font-weight: 500;
+    font-size: 15px;
 }
 
 .value-box .value-span {
     margin: 30px 0 10px 0;
     padding: 10px 25px;
     border: 1px solid #E8E8E8;
-    color: var(--color);
+    color: #000;
     text-align: center;
-    font-weight: var(--weight);
-    font-size: var(--size);
+    font-weight: 500;
+    font-size: 15px;
     display: inline-block;
 }
 
@@ -270,20 +272,19 @@ div#searchPage div:empty {
     border: none;
     border-radius: 0;
 }
-
 ul.steps-labels {
     padding: 0;
     list-style: none;
     display: flex;
     justify-content: space-around;
-    font-weight: var(--weight);
+    font-weight: 500;
 }
 
 .value-box p {
     font-size: 13px;
     color: #9c9c9c;
     MARGIN-BOTTOM: 8px;
-    font-weight: var(--weight);
+    font-weight: 500;
 }
 
 .advance-header {
@@ -320,11 +321,13 @@ ul.steps-labels {
     cursor: pointer;
     font-size: 16px;
     font-weight: 500;
+    color: #000;
 }
 
 .diamond-search-tab-view .react-tabs__tab--selected {
     background: #FAFAFA;
     border-color: transparent;
+    color:var(--color);
 }
 
 .diamond-search-tab-view .react-tabs__tab-list {
@@ -397,6 +400,8 @@ ul.steps-labels {
 
 .diamond-search-tab-view table tr td, .diamond-search-tab-view table tr th {
     padding: 15px 0px 15px 15px;
+    border: none;
+    color: #000;
 }
 
 .diamond-search-tab-view thead.rc-table-thead {
@@ -410,6 +415,8 @@ ul.steps-labels {
 .diamond-search-tab-view table {
     width: 100%;
     border-collapse: collapse;
+    border: none;
+    box-shadow: none;
 }
 
 .diamond-search-tab-view td.rc-table-cell.rc-table-cell-row-hover {
@@ -437,6 +444,7 @@ ul.steps-labels {
     list-style: none;
     font-size: 15px;
     padding-bottom: 10px;
+    color: #000;
 }
 
 .table-info-inner h4 {
@@ -445,19 +453,19 @@ ul.steps-labels {
     background: #fafafa;
     padding: 16px 10px;
     text-align: center;
-}
-
-.table-info-inner ul li b {
-    font-weight: 500;
+    color: #000;
 }
 
 .btn-outer {
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 
 .btn-outer a {
     width: 100%;
-    display: inline-block;
     color: var(--color);
     font-size: 20px;
 }
@@ -465,11 +473,34 @@ ul.steps-labels {
     background: var(--color);
     color: #fff;
     text-decoration: none;
-    padding: 18px 30px;
-    text-transform: uppercase;
-    width: auto;
-    margin: 20px 0;
+    padding: 7px 30px;
+    width: 45%;
+    margin: 0px 0 20px;
+    font-size: 18px;
 }
+.rc-table-content {
+    height: 280px;
+    overflow: auto;
+}
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #fff;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: var(--color);
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color);
+  }
 
 
 /* MEDIA CSS */

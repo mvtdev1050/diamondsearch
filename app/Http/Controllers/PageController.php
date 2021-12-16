@@ -17,7 +17,8 @@ class PageController extends Controller
     }   
     public function diamondPage(){
             //return view('frontend.diamond');
-            $contents = view('frontend.diamond');
+            $setting = Setting::where(['store_id' => Session::get('store_id')])->first();
+            $contents = view('frontend.diamond')->with('setting',$setting);        
             return response($contents)->header('Content-Type', 'application/liquid');
     }
     public function viewDashboard(){

@@ -10,14 +10,11 @@
     </script>
   </head>
   <body>
-     
+
       @if (!empty($setting)) 
           <script>
-              window.option = "{{$setting['column_option']}}";
-              window.weight = "{{$setting['font_weight']}}";
-              window.size = "{{$setting['font_size']}}";
-              window.family = "{{$setting['font_family']}}";
-              window.color = "{{$setting['color']}}";
+            document.body.style.setProperty('--color', "{{$setting['color']}}");
+            document.body.style.setProperty('--size', "{{$setting['size']}}");
           </script>
       @endif
     <div id="searchPage"></div>

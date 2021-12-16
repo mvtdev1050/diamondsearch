@@ -61,6 +61,17 @@ export default function DiamondTable() {
             trId: 'RC1',
         },
         {
+            compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare" style={{ display: "none" }} /><label htmlFor="compare" className="compare-checkbox"></label></div>,
+            sku: 'HG175',
+            shape: 'Pear',
+            carat: '0.30',
+            color: 'G',
+            clarity: 'VS1',
+            report: 'FDI',
+            price: '15272',
+            trId: 'RC1',
+        },
+        {
             compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare1" style={{ display: "none" }} /><label htmlFor="compare1" className="compare-checkbox"></label></div>,
             sku: 'HG175',
             shape: 'Pear',
@@ -83,15 +94,39 @@ export default function DiamondTable() {
             trId: 'RC3',
         }
     ];
+    const data1 = [
+        {
+            compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare" style={{ display: "none" }} /><label htmlFor="compare" className="compare-checkbox"></label></div>,
+            sku: 'HG175',
+            shape: 'Pear',
+            carat: '0.30',
+            color: 'G',
+            clarity: 'VS1',
+            report: 'FDI',
+            price: '15272',
+            trId: 'RC1',
+        },
+        {
+            compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare1" style={{ display: "none" }} /><label htmlFor="compare1" className="compare-checkbox"></label></div>,
+            sku: 'HG175',
+            shape: 'Pear',
+            carat: '0.30',
+            color: 'G',
+            clarity: 'VS1',
+            report: 'None',
+            price: '15272',
+            trId: 'RC2',
+        }
+    ];
     return (
         <div>
             <Tabs>
                 <TabList>
                     <Tab>
-                        Results <span>(57)</span>
+                        Results <span>(4)</span>
                     </Tab>
                     <Tab>
-                        Comparison <span>(4)</span>
+                        Comparison <span>(2)</span>
                     </Tab>
                 </TabList>
 
@@ -110,6 +145,7 @@ export default function DiamondTable() {
                                     <li key={'li6'} ><b>Polish:</b> VG</li>
                                 </ul>
                                 <div className='btn-outer'>
+                                    <a href="#" className='cust-btn'> Add to cart</a>
                                     <a href="#" className='cust-btn'> Inquire Now</a>
                                     <a href="#"> View more details</a>
                                 </div>
@@ -119,7 +155,7 @@ export default function DiamondTable() {
                 </TabPanel>
                 <TabPanel>
                     <div className='table-info-outer'>
-                        <Table rowKey="trId" columns={columns} data={data} />
+                        <Table rowKey="trId" columns={columns} data={data1} />
                         <div className='table-info'>
                             <div className='table-info-inner'>
                                 <h4>Diamond Information</h4>

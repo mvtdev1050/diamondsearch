@@ -19,8 +19,6 @@ class AppController extends Controller
         $this->secret = env('SHOPIFY_API_SECRET');
         $this->callback = env('HOME_URL').'callback';
         $this->url=env('HOME_URL');
-        if(empty(Session::get('storename'))){Session::put('storename', 'moyenandco.myshopify.com');}
-        if(empty(Session::get('store_id'))){Session::put('store_id', '1');}  
     }
 
     public function auth(Request $request)
@@ -122,25 +120,5 @@ class AppController extends Controller
         // $request->shop;
         Store::where(['store_name' => $request->shop])->update(['status'=> '0']); die;
     }
-    public function runApi($endpoint)
-    {
-        $method='GET';
-        $data = array(
-           // 'store_name' => $request->shop,
-        ); 
-        //$endpoint=$request->endpoint;
-        $url = "https://" . Session::get('storename') . "/admin/api/2021-04/" . $endpoint.'.json';
-        $r = Store::select('access_token')->where(['store_name' => Session::get('storename')])->where(['status'=> '1'])->first();
-        if(!empty($r['access_token'])){
-            $header = array(
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-                'X-Shopify-Access-Token' => $resp['access_token']
-            );
-            $resp = $this->hitApi($method, $url, $header,json_encode($data));
-            return json_encode($resp->shop);
-        }
-        return "end";
-       
-    }
+   
 }

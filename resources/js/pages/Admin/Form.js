@@ -17,14 +17,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Form() {
     const config = {apiKey: API_KEY, host: btoa(STORE_NAME)};
-    if (window.family){var family=window.family;} else{var family='Arial Sans-Serif';}
     if (window.size){var size=window.size;} else{var size='14';}
-    if (window.weight){var weight=window.weight;} else{var weight='600';}
     if (window.option){var option=window.option;} else{var option='Login';}
     if (window.color){var col=window.color;} else{var col='rgba(1,1,1,1)';}
-    const [fontFamilyValue, setFontFamilyValue] = useState(family);
     const [sizeValue, setSizeValue] = useState(size);
-    const [weightValue, setWeightValue] = useState(weight);
     const [priceOption, setPriceOption] = useState(option);
     const rgbVal = col.replace(/[^\d*.?\d*,]/g, "").split(","); 
     const [color, setColor] = useState(
@@ -37,9 +33,6 @@ export default function Form() {
      );
     const handlePriceOptionChange = (value) => {
         setPriceOption(value);
-    }
-    const handleWeightChange = (value) => {
-        setWeightValue(value);
     }
     const handleSizeChange = (value) => {
         setSizeValue(value);
@@ -56,11 +49,6 @@ export default function Form() {
         setState({ color });
     }
 
-    const handleFamilyChange = (value) => {
-        setFontFamilyValue(value);
-    }
-
-
     const rgbaColor = rgbString(hsbToRgb(color));
     const divStyle = {
         width: "60px",
@@ -76,24 +64,13 @@ export default function Form() {
     ];
     const sizeOptions = [
         { label: 'Select Any Option', value: '' },
-        { label: '10', value: '10' },
         { label: '12', value: '12' },
+        { label: '13', value: '13' },
         { label: '14', value: '14' },
+        { label: '15', value: '15' },
         { label: '16', value: '16' },
+        { label: '17', value: '17' },
         { label: '18', value: '18' },
-        { label: '20', value: '20' },
-    ];
-    const weightOptions = [
-        { label: 'Select Any Option', value: '' },
-        { label: '100', value: '100' },
-        { label: '200', value: '200' },
-        { label: '300', value: '300' },
-        { label: '400', value: '400' },
-        { label: '500', value: '500' },
-        { label: '600', value: '600' },
-        { label: '700', value: '700' },
-        { label: '800', value: '800' },
-        { label: '900', value: '900' },
     ];
     const { hue, brightness, saturation } = color;
     const rgb = hsbToRgb(hue / 360, saturation, brightness);
@@ -118,9 +95,7 @@ export default function Form() {
     const handleFieldSubmit = () => {
         var data = {
             store_id: STORE_ID,
-            font_family: fontFamilyValue,
             font_size: sizeValue,
-            font_weight: weightValue,
             color: rgbaColor,
             column_option: priceOption,
 
@@ -147,12 +122,13 @@ export default function Form() {
                     <Card sectioned>
                             <FormLayout>
                                 <FormLayout.Group>
-                                     <TextField
-                                        label=" Font Famliy:"
+                                    <Select
+                                        label=" Font size :"
                                         required="true"
-                                        name="family"
-                                        value={fontFamilyValue}
-                                        onChange={handleFamilyChange}
+                                        name="size"
+                                        value={sizeValue}
+                                        options={sizeOptions}
+                                        onChange={handleSizeChange}
                                     />
                                      <Select
                                         label="Price Column Option:"
@@ -162,24 +138,6 @@ export default function Form() {
                                         onChange={handlePriceOptionChange}
                                         value={priceOption}
 
-                                    />
-                                </FormLayout.Group>
-                                <FormLayout.Group>
-                                    <Select
-                                        label=" Font size :"
-                                        required="true"
-                                        name="size"
-                                        value={sizeValue}
-                                        options={sizeOptions}
-                                        onChange={handleSizeChange}
-                                    />
-                                    <Select
-                                        label="Font Weight :"
-                                        required="true"
-                                        name="weight"
-                                        options={weightOptions}
-                                        value={weightValue}
-                                        onChange={handleWeightChange}
                                     />
                                 </FormLayout.Group>
                                 <FormLayout >
