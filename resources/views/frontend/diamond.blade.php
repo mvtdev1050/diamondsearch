@@ -9,7 +9,8 @@
       <link rel="stylesheet" href="https://unpkg.com/@shopify/polaris@7.0.0/build/esm/styles.css" />
     </script>
   </head>
-  <body> 
+  <body>
+     
       @if (!empty($setting)) 
           <script>
               window.option = "{{$setting['column_option']}}";
