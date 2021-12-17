@@ -3,6 +3,8 @@ import React, { useCallback, useRef, useState } from "react";
 import Table from 'rc-table';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+if (window.option){var option=window.option;} else{var option='Login';}
+if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
 
 export default function DiamondTable() {
     const columns = [
@@ -57,7 +59,7 @@ export default function DiamondTable() {
             color: 'G',
             clarity: 'VS1',
             report: 'FDI',
-            price: '15272',
+            price: option_text,
             trId: 'RC1',
         },
         {
@@ -68,7 +70,7 @@ export default function DiamondTable() {
             color: 'G',
             clarity: 'VS1',
             report: 'FDI',
-            price: '15272',
+            price: option_text,
             trId: 'RC1',
         },
         {
@@ -79,7 +81,7 @@ export default function DiamondTable() {
             color: 'G',
             clarity: 'VS1',
             report: 'None',
-            price: '15272',
+            price: option_text,
             trId: 'RC2',
         },
         {
@@ -90,7 +92,7 @@ export default function DiamondTable() {
             color: 'G',
             clarity: 'VS1',
             report: 'None',
-            price: '15272',
+            price: option_text,
             trId: 'RC3',
         }
     ];
@@ -103,7 +105,7 @@ export default function DiamondTable() {
             color: 'G',
             clarity: 'VS1',
             report: 'FDI',
-            price: '15272',
+            price: option_text,
             trId: 'RC1',
         },
         {
@@ -114,7 +116,7 @@ export default function DiamondTable() {
             color: 'G',
             clarity: 'VS1',
             report: 'None',
-            price: '15272',
+            price: option_text,
             trId: 'RC2',
         }
     ];

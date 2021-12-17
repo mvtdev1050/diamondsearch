@@ -14,7 +14,8 @@
       @if (!empty($setting)) 
           <script>
             document.body.style.setProperty('--color', "{{$setting['color']}}");
-            document.body.style.setProperty('--size', "{{$setting['size']}}");
+            document.body.style.setProperty('--size', "{{$setting['font_size']}}");
+            window.option="{{$setting['column_option']}}";
           </script>
       @endif
     <div id="searchPage"></div>

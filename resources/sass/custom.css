@@ -73,6 +73,7 @@ div#searchPage div:empty {
 .diamond-search .option-title {
     margin: 0 0 20px;
     color:#000;
+    font-size:var(--size);
 }
 
 .diamond-search .search-options .inner-search-options .shapes ul {

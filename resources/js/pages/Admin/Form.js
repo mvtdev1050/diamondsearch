@@ -17,9 +17,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Form() {
     const config = {apiKey: API_KEY, host: btoa(STORE_NAME)};
-    if (window.size){var size=window.size;} else{var size='14';}
-    if (window.option){var option=window.option;} else{var option='Login';}
-    if (window.color){var col=window.color;} else{var col='rgba(1,1,1,1)';}
+    if (window.size){var size=window.size;} else{var size='14px';}
+    if (window.option){var option=window.option;} else{var option='login';}
+    if (window.color){var col=window.color;} else{var col='rgba(0,0,0,1)';}
     const [sizeValue, setSizeValue] = useState(size);
     const [priceOption, setPriceOption] = useState(option);
     const rgbVal = col.replace(/[^\d*.?\d*,]/g, "").split(","); 
@@ -58,19 +58,19 @@ export default function Form() {
     };
     const columnOptions = [
         { label: 'Select Any Option', value: '' },
-        { label: 'Login Button', value: 'Login' },
-        { label: 'Call', value: 'Call' },
-        { label: 'View Product', value: 'View Product' },
+        { label: 'Login For Price', value: 'login' },
+        { label: 'Call Now', value: 'call' },
+        { label: 'View Product', value: 'view' },
     ];
     const sizeOptions = [
         { label: 'Select Any Option', value: '' },
-        { label: '12', value: '12' },
-        { label: '13', value: '13' },
-        { label: '14', value: '14' },
-        { label: '15', value: '15' },
-        { label: '16', value: '16' },
-        { label: '17', value: '17' },
-        { label: '18', value: '18' },
+        { label: '12px', value: '12px' },
+        { label: '13px', value: '13px' },
+        { label: '14px', value: '14px' },
+        { label: '15px', value: '15px' },
+        { label: '16px', value: '16px' },
+        { label: '17px', value: '17px' },
+        { label: '18px', value: '18px' },
     ];
     const { hue, brightness, saturation } = color;
     const rgb = hsbToRgb(hue / 360, saturation, brightness);
