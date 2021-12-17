@@ -30,17 +30,19 @@
     </script>
     @if (!empty($setting)) 
         <script>
+            document.body.style.setProperty('--colors', "{{$setting['color']}}");
+            document.body.style.setProperty('--sizes', "{{$setting['font_size']}}");
             window.option = "{{$setting['column_option']}}";
             window.size = "{{$setting['font_size']}}";
             window.color = "{{$setting['color']}}";
         </script>
     @endif
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div id="dashboard">
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div id="layout-form">
             </div>
         </div>

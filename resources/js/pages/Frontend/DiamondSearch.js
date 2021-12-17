@@ -57,6 +57,7 @@ const handle = props => {
         depth: [0.10, 12.07],
     })
     const handleRange = (values, name) => {
+        console.log(range);
         setRange({
             ...range,
             [name]: values
@@ -134,7 +135,7 @@ const handle = props => {
                                 <p>Flawless</p>
                             </div>
                         </div>
-                        <Range marks={marks} min={9} max={99} step={9} defaultValue={[18, 72]} onChange={(values) => handleRange(values, "price")} />
+                        <Range marks={marks} min={9} max={99} step={9} defaultValue={[18, 72]} onChange={(values) => handleRange(values, "clarity")} />
                         <ul className="steps-labels">
                             <li key={'12'}>12</li>
                             <li key={'I1'}>I1</li>
@@ -198,22 +199,18 @@ const handle = props => {
                                     </div>
                                 </div>
                                 <div className="inner-range-options">
-                                    <h3 className="option-title uppercase">CUT</h3>
-                                    <Range marks={marks} min={9} max={99} step={9} defaultValue={range.color} onChange={(values) => handleRange(values, "cut")} />
+                                    <h3 className="option-title uppercase">SYMMETRY</h3>
+
+                                    <Range marks={marksLetter} step={4} defaultValue={range.symmetry} onChange={(values) => handleRange(values, "symmetry")} />
                                     <ul className="steps-labels">
-                                        <li key={'cd'}>D</li>
-                                        <li key={'ce'}>E</li>
-                                        <li key={'cf'}>F</li>
-                                        <li key={'cg'}>G</li>
-                                        <li key={'ch'}>H</li>
-                                        <li key={'ci'}>I</li>
-                                        <li key={'cj'}>J</li>
-                                        <li key={'ck'}>K</li>
-                                        <li key={'cl'}>L</li>
-                                        <li key={'cm'}>M</li>
-                                        <li key={'cn'}>N</li>
+                                        <li key={'symmetryFair'}>  FAIR</li>
+                                        <li key={'symmetryExcellent'}>EXCELLENT</li>
+                                        <li key={'symmetryVgood'}>VERY GOOD</li>
+                                        <li key={'symmetryGood'}>GOOD</li>                                     
+                                        <li key={'symmetryDeal'}>IDEAL</li>
                                     </ul>
                                 </div>
+                      
                             </div>
                             <div className='range-options'>
                                 <div className="inner-range-options">

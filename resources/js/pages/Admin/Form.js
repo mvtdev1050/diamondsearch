@@ -46,7 +46,7 @@ export default function Form() {
             blue: rgbValues[2],
             alpha: rgbValues[3]
         });
-        setState({ color });
+        setColor({ color });
     }
 
     const rgbaColor = rgbString(hsbToRgb(color));
@@ -107,7 +107,9 @@ export default function Form() {
             body: JSON.stringify(data),
         };
         fetch(url, requestOptions)
-            .then(toast.success("Settings Saved Successfully"))
+            .then(toast.success("Settings Saved Successfully")
+            //,window.setTimeout(function () {window.location.reload()}, 3000)
+            )
             .catch(console.log("error"))
     }
     const submitAction = {
@@ -143,6 +145,7 @@ export default function Form() {
                                 <FormLayout >
                                     <p style={{ padding: '20px 0px 0px 0px' }}> Color Picker for search page </p>
                                     <ColorPicker
+                                        id="color-picker"
                                         onChange={setColor}
                                         color={color}
                                         allowAlpha
@@ -155,6 +158,7 @@ export default function Form() {
                                                 term: "Color",
                                                 description: (
                                                     <TextField
+                                                        id="color-field"
                                                         label="Color"
                                                         labelHidden
                                                         onChange={() => handleRgbChange}
@@ -167,7 +171,7 @@ export default function Form() {
                                     />
                                 </FormLayout.Group>
                             </FormLayout>
-                            <ToastContainer autoClose={5000}  />
+                            <ToastContainer autoClose={3000}  />
                      </Card>
                     <Layout.Section>
                         <PageActions primaryAction={submitAction} />

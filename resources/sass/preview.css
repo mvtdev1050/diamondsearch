@@ -1,0 +1,84 @@
+:root {
+    --colors: rgba(0, 0, 0, 1);
+    --sizes: 14px; 
+  }
+
+div#searchPreview {
+    font-size:var(--sizes);
+    color:var(--colors);
+}
+div#searchPreview div:empty {
+    display: block;
+}
+
+div#searchPreview .serch-outer.diamond-search {
+    padding: 10px 0;
+}
+div#searchPreview .search-header .title {
+    font-size: 28px;
+}
+
+div#searchPreview .search-header {
+    padding: 10px 0;
+}
+
+div#searchPreview .diamond-search .option-title {
+    font-size:var(--sizes);
+}
+/* SLider css */
+div#searchPreview .rc-slider-rail {
+    background-color: var(--colors);
+}
+
+div#searchPreview .rc-slider-track {
+    background-color: var(--colors);
+}
+
+div#searchPreview .rc-slider-handle {
+    border: solid 5px var(--colors);
+}
+
+div#searchPreview .rc-slider-handle:hover, .rc-slider-handle-click-focused:focus {
+    border-color: var(--colors);
+}
+
+div#searchPreview .rc-slider-handle:active {
+    border-color: var(--colors);
+    box-shadow: 0 0 5px var(--colors);
+}
+
+div#searchPreview .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
+    border-color: var(--colors);
+}
+div#searchPreview .rc-slider-tooltip-inner {
+    color: var(--colors);
+}
+div#searchPreview .value-box input {
+    color: var(--colors);
+}
+div#searchPreview .diamond-search-tab-view .react-tabs__tab--selected {
+    color:var(--colors);
+}
+div#searchPreview .diamond-search-tab-view .compare-checkbox-wrap input[type="checkbox"]:checked+label::before {
+    background: var(--colors);
+}
+
+div#searchPreview .diamond-search-tab-view .compare-checkbox-wrap input[type="checkbox"]:checked+label {
+    border-color: var(--colors);
+}
+div#searchPreview .btn-outer .cust-btn {
+    background: var(--colors);
+}
+div#searchPreview .rc-table-content {
+    height: 300px;
+    overflow: auto;
+}
+/* Handle */
+div#searchPreview ::-webkit-scrollbar-thumb {
+    background: var(--colors);
+}
+  
+/* Handle on hover */
+div#searchPreview ::-webkit-scrollbar-thumb:hover {
+    background: var(--colors);
+}
