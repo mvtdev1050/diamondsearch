@@ -10,14 +10,19 @@
     </script>
   </head>
   <body>
-
-      @if (!empty($setting)) 
+ <script>
+        window.home_url="{{env('HOME_URL')}}";
+        window.api_key="{{env('SHOPIFY_API_KEY')}}";
+        window.storename = "{{Session::get('storename')}}";
+        window.store_id = "{{Session::get('store_id')}}";
+    </script> 
+       @if (!empty($setting)) 
           <script>
             document.body.style.setProperty('--color', "{{$setting['color']}}");
             document.body.style.setProperty('--size', "{{$setting['font_size']}}");
             window.option="{{$setting['column_option']}}";
           </script>
-      @endif
+      @endif -
     <div id="searchPage"></div>
     <script src="{{env('HOME_URL')}}js/app.js"> </script>
   </body>

@@ -18,4 +18,7 @@ use Illuminate\Support\Facades\Route;
  //   return $request->user();
 //});
 
+Route::middleware(['cors'])->group(function () {
+    Route::post('/backend/rapnet-api', 'BackendController@rapnetApi');
+});
 

@@ -16,11 +16,14 @@ class PageController extends Controller
         if(empty(Session::get('store_id'))){Session::put('store_id', '1');}
     }   
     public function diamondPage(){
-            //return view('frontend.diamond');
             $setting = Setting::where(['store_id' => Session::get('store_id')])->first();
-            $contents = view('frontend.diamond')->with('setting',$setting);        
+            $contents = view('frontend.diamond')->with('setting',$setting);     
             return response($contents)->header('Content-Type', 'application/liquid');
     }
+    public function diamondLocal(){
+        $setting = Setting::where(['store_id' => Session::get('store_id')])->first();
+        return view('frontend.diamondlocal')->with('setting',$setting);        
+}
     public function viewDashboard(){
         $setting = Setting::where(['store_id' => Session::get('store_id')])->first();
         return view('adminview',compact('setting'));

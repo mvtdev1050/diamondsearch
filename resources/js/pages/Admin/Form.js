@@ -103,7 +103,7 @@ export default function Form() {
         const url = HOME_URL+'backend/save-setting';
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+           headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         };
         fetch(url, requestOptions)

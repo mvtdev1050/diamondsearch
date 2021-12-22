@@ -19,11 +19,15 @@ Route::view('/', 'welcome');
 
 Route::get('/auth', 'AppController@auth');
 Route::get('/callback', 'AppController@callback');
-Route::post('/backend/admin-product', 'BackendController@adminProduct');
 
+Route::post('/backend/admin-product', 'BackendController@adminProduct');
 Route::post('/backend/save-setting', 'BackendController@saveSetting');
+
 Route::get('/dashboard', 'PageController@viewDashboard');
 Route::get('/diamond-search', 'PageController@diamondPage');
+Route::get('/diamond-local', 'PageController@diamondLocal');
 Route::post('/webhook/app/uninstall', 'AppController@appUninstalled');
+
+
 
 

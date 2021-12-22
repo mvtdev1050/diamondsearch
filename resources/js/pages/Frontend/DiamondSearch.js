@@ -7,7 +7,7 @@ import '../../../sass/custom.css';
 import * as ReactIcon from 'react-icons/fa';
 import DiamondTable from './DiamondTable';
 import DiamondHeader from './DiamondHeader';
-
+const HOME_URL =window.home_url;
 const marks = {
     9: '',
     18: '',
@@ -47,7 +47,7 @@ const handle = props => {
     );
   };
     const [range, setRange] = useState({
-        carat: [0.08, 11.07],
+        carat: [5.08, 28.07],
         price: [64, 341888],
         length: [0.10, 12.07],
         polish: [0.10, 12.07],
@@ -55,13 +55,27 @@ const handle = props => {
         color: [0.10, 12.07],
         cut: [0.10, 12.07],
         depth: [0.10, 12.07],
+        symmetry:[0.10, 10.2]
     })
+    const handleFieldSubmit = () => {
+       
+        const url = HOME_URL+'api/backend/rapnet-api';
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json','Access-Control-Allow-Origin':'*'},
+            body: JSON.stringify(range),
+        };
+        fetch(url, requestOptions)
+            .then(console.log("then"))
+            .catch(console.log("error"))
+    }
     const handleRange = (values, name) => {
-        console.log(range);
         setRange({
             ...range,
             [name]: values
-        })
+        });
+        handleFieldSubmit();
+
     }
     const [loadMore, setLoadMore] = React.useState(false);
     return (
