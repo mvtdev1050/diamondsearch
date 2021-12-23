@@ -22,8 +22,8 @@
             document.body.style.setProperty('--size', "{{$setting['font_size']}}");
             window.option="{{$setting['column_option']}}";
           </script>
-      @endif -
-    <div id="searchPage"></div>
+      @endif 
+    <div id="searchLocal"></div>
     <script src="js/app.js"> </script>
   </body>
 </html>

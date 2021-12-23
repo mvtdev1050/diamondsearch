@@ -62,63 +62,8 @@ export default function DiamondTable() {
             price: option_text,
             trId: 'RC1',
         },
-        {
-            compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare" style={{ display: "none" }} /><label htmlFor="compare" className="compare-checkbox"></label></div>,
-            sku: 'HG175',
-            shape: 'Pear',
-            carat: '0.30',
-            color: 'G',
-            clarity: 'VS1',
-            report: 'FDI',
-            price: option_text,
-            trId: 'RC2',
-        },
-        {
-            compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare1" style={{ display: "none" }} /><label htmlFor="compare1" className="compare-checkbox"></label></div>,
-            sku: 'HG175',
-            shape: 'Pear',
-            carat: '0.30',
-            color: 'G',
-            clarity: 'VS1',
-            report: 'None',
-            price: option_text,
-            trId: 'RC3',
-        },
-        {
-            compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare1" style={{ display: "none" }} /><label htmlFor="compare1" className="compare-checkbox"></label></div>,
-            sku: 'HG175',
-            shape: 'Pear',
-            carat: '0.30',
-            color: 'G',
-            clarity: 'VS1',
-            report: 'None',
-            price: option_text,
-            trId: 'RC4',
-        }
     ];
     const data1 = [
-        {
-            compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare" style={{ display: "none" }} /><label htmlFor="compare" className="compare-checkbox"></label></div>,
-            sku: 'HG175',
-            shape: 'Pear',
-            carat: '0.30',
-            color: 'G',
-            clarity: 'VS1',
-            report: 'FDI',
-            price: option_text,
-            trId: 'RC5',
-        },
-        {
-            compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare1" style={{ display: "none" }} /><label htmlFor="compare1" className="compare-checkbox"></label></div>,
-            sku: 'HG175',
-            shape: 'Pear',
-            carat: '0.30',
-            color: 'G',
-            clarity: 'VS1',
-            report: 'None',
-            price: option_text,
-            trId: 'RC6',
-        }
     ];
     return (
         <div>

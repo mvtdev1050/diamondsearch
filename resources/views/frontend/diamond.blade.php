@@ -22,7 +22,7 @@
             document.body.style.setProperty('--size', "{{$setting['font_size']}}");
             window.option="{{$setting['column_option']}}";
           </script>
-      @endif -
+      @endif 
     <div id="searchPage"></div>
     <script src="{{env('HOME_URL')}}js/app.js"> </script>
   </body>

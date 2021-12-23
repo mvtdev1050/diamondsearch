@@ -14,5 +14,5 @@ require('./bootstrap');
 require('./pages/Admin/Dashboard');
 require('./pages/Admin/Form');
 require('./pages/Frontend/DiamondSearch');
-
+require('./pages/Frontend/DiamondLocal');
 

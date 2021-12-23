@@ -108,10 +108,10 @@ div#searchPage div:empty {
     transition: 0.2s ease-in-out;
     text-transform: uppercase;
 }
-/* 
+
 .diamond-search .search-options .inner-search-options .shapes ul li .text {
     opacity: 0;
-} */
+} 
 
 .diamond-search .search-options .inner-search-options .shapes ul li.active .text {
     opacity: 1;

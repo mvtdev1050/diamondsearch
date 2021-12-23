@@ -5,8 +5,9 @@ import Slider, { SliderTooltip  } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import '../../../sass/custom.css';
 import * as ReactIcon from 'react-icons/fa';
-import DiamondTable from './DiamondTable';
 import DiamondHeader from './DiamondHeader';
+import DiamondTable from './DiamondTable';
+
 const HOME_URL =window.home_url;
 const marks = {
     9: '',
@@ -30,52 +31,39 @@ const marksLetter = {
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
 export default function DiamondSearch() {
-const { Handle } = Slider;
-
-const handle = props => {
-    const { value, dragging, index, ...restProps } = props;
-    return (
-      <SliderTooltip
-        prefixCls="rc-slider-tooltip"
-        overlay={`${value} %`}
-        visible={dragging}
-        placement="top"
-        key={index}
-      >
+    const { Handle } = Slider;
+    const handle = props => {
+        const { value, dragging, index, ...restProps } = props;
+        return (
+        <SliderTooltip
+            prefixCls="rc-slider-tooltip"
+            overlay={`${value} %`}
+            visible={dragging}
+            placement="top"
+            key={index}
+        >
         <Handle value={value} {...restProps} />
-      </SliderTooltip>
-    );
-  };
+        </SliderTooltip>
+        );
+    };
     const [range, setRange] = useState({
-        carat: [5.08, 28.07],
+        carat: [0.08, 11.07],
         price: [64, 341888],
-        length: [0.10, 12.07],
-        polish: [0.10, 12.07],
-        table: [0.10, 12.07],
-        color: [0.10, 12.07],
-        cut: [0.10, 12.07],
-        depth: [0.10, 12.07],
-        symmetry:[0.10, 10.2]
-    })
-    const handleFieldSubmit = () => {
+        color: [15, 75],
+        clarity: [20, 80],
+        length: [1, 100],
+        polish: [1, 100],
+        table: [1, 100],
+        symmetry:[1, 100],
+        depth: [1, 100],
+        cut: [1, 100],
        
-        const url = HOME_URL+'api/backend/rapnet-api';
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json','Access-Control-Allow-Origin':'*'},
-            body: JSON.stringify(range),
-        };
-        fetch(url, requestOptions)
-            .then(console.log("then"))
-            .catch(console.log("error"))
-    }
+    })
     const handleRange = (values, name) => {
         setRange({
             ...range,
             [name]: values
         });
-        handleFieldSubmit();
-
     }
     const [loadMore, setLoadMore] = React.useState(false);
     return (
@@ -102,7 +90,7 @@ const handle = props => {
                     </div>
                     <div className="inner-range-options">
                         <h3 className="option-title uppercase">PRICE</h3>
-                        <Range min={0} max={341888} defaultValue={range.price} tipFormatter={value => `$${value}`} onChange={(values) => handleRange(values, "price")} />
+                        <Range min={64} max={341888} defaultValue={range.price} tipFormatter={value => `$${value}`} onChange={(values) => handleRange(values, "price")} />
                         <div className="value-box">
                             <div className="value-left">
                                 <span className='value-span'>{range.price[0]} </span>
@@ -124,7 +112,7 @@ const handle = props => {
                                 <p>Near Colorless</p>
                             </div>
                         </div>
-                        <Range marks={marks} min={9} max={99} step={9} defaultValue={[18, 72]} onChange={(values) => handleRange(values, "color")} />
+                        <Range marks={marks} min={9} max={99} step={9}  defaultValue={range.color} onChange={(values) => handleRange(values, "color")} />
                         <ul className="steps-labels">
                             <li key={'D'}>D</li>
                             <li key={'E'}>E</li>
@@ -149,7 +137,7 @@ const handle = props => {
                                 <p>Flawless</p>
                             </div>
                         </div>
-                        <Range marks={marks} min={9} max={99} step={9} defaultValue={[18, 72]} onChange={(values) => handleRange(values, "clarity")} />
+                        <Range marks={marks} min={9} max={99} step={9} defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")} />
                         <ul className="steps-labels">
                             <li key={'12'}>12</li>
                             <li key={'I1'}>I1</li>
