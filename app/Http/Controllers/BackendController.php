@@ -68,12 +68,12 @@ class BackendController extends Controller
     }
     public function rapnetApi(Request $request)
     { 
+
         $request_json = [];
         $request_json['request']['header']['username'] = 'f4ickp8pctfwszxcd9mff8hmhb7ixv'; //Essential
         $request_json['request']['header']['password'] = 's7wwA8yg'; //Essential
         $request_json["request"]["body"]["page_number"] = 1; //Essential
         $request_json["request"]["body"]["page_size"] = 20; //Essential
-        
             if(!empty($request->range)){         
                 foreach ($request->range as $key => $value){
                     if($key=="shapes"){
@@ -102,6 +102,9 @@ class BackendController extends Controller
                 $arr[$i]['shape']=$diamond['shape'];
                 $arr[$i]['size']=$diamond['size'];
                 $arr[$i]['clarity']=$diamond['clarity'];
+                $arr[$i]['price']=$diamond['total_sales_price'];
+                $arr[$i]['sku']=$diamond['stock_num'];
+                $arr[$i]['report']=$diamond['cert_num'];
                 $i++;
             }
         }

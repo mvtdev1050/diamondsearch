@@ -25,6 +25,7 @@
         "sass-loader": "^8.0.0"
     },
     "dependencies": {
+        "@material-ui/core": "^4.12.3",
         "@shopify/app-bridge-react": "^2.0.5",
         "@shopify/javascript-utilities": "^2.4.1",
         "@shopify/polaris": "^7.5.0",
@@ -32,11 +33,13 @@
         "rc-slider": "^9.7.5",
         "rc-table": "^7.21.0",
         "rc-tooltip": "^5.1.1",
+        "react-data-table-component": "^7.4.6",
         "react-icons": "^4.3.1",
         "react-router-dom": "^6.0.2",
         "react-tabs": "^3.2.3",
         "react-toast": "^1.0.3",
         "react-toastify": "^4.1.0",
-        "soap": "^0.43.0"
+        "soap": "^0.43.0",
+        "styled-components": "^5.3.3"
     }
 }

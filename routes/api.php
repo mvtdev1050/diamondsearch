@@ -19,6 +19,6 @@ use Illuminate\Support\Facades\Route;
 //});
 
 Route::middleware(['cors'])->group(function () {
-    Route::post('/backend/rapnet-api', 'BackendController@rapnetApi');
+    Route::any('/backend/rapnet-api', 'BackendController@rapnetApi');
 });
 

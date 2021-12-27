@@ -1,15 +1,58 @@
 import ReactDOM from 'react-dom';
 import 'rc-tooltip/assets/bootstrap.css';
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useEffect, useState } from "react";
 import Slider, { SliderTooltip  } from 'rc-slider';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 import 'rc-slider/assets/index.css';
 import '../../../sass/custom.css';
 import * as ReactIcon from 'react-icons/fa';
-import DiamondHeader from './DiamondHeader';
-import DiamondTable from './DiamondTable';
+import debounce from 'lodash/debounce';
+import DataTable from 'react-data-table-component';
 
+if (window.option){var option=window.option;} else{var option='Login';}
+if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
 const HOME_URL =window.home_url;
-const marks = {
+const shapes = [
+    {
+        name: 'Round',
+        image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-round.svg?v=12693028039347699321',
+    },
+    {
+        name: 'Oval',
+        image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-oval.svg?v=2497033182748759259',
+    },
+    {
+        name: 'Cushion',
+        image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-cusion.svg?v=11214961818959539646',
+    },
+    {
+        name: 'Princess',
+        image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-pricess.svg?v=16220410196671539921',
+    },
+    {
+        name: 'Pear',
+        image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-pear.svg?v=3686681557302028351',
+    },
+    {
+        name: 'Marquise',
+        image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-marquise.svg?v=13322033320278941088',
+    },
+    {
+        name: 'Asscher',
+        image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-asscher.svg?v=4564496663447661558',
+    },
+    {
+        name: 'Radiant',
+        image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-radiant.svg?v=16126585984193094258',
+    },
+    {
+        name: 'Heart',
+        image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-heart.svg?v=15786379548922254164',
+    }
+
+];
+const clarmark = {
     9: '',
     18: '',
     27: '',
@@ -20,52 +63,252 @@ const marks = {
     72: '',
     81: '',
     90: '',
+}
+const colormark  = {
+    0: '',
+    10: '',
+    20: '',
+    30: '',
+    40: '',
+    50: '',
+    60: '',
+    70: '',
+    80: '',
+    90: '',
 };
 const marksLetter = {
-    0: '',
     25: '',
     50: '',
     75: '',
     100: '',
-}
+};
+const colorAlph = {
+    0: 'D',
+    10: 'E',
+    20: 'F',
+    30: 'G',
+    40: 'H',
+    50: 'I',
+    60: 'J',
+    70: 'K',
+    80: 'L',
+    90: 'M',
+};
+const clarAlph = {
+    0: 'I3',
+    9: 'I2',
+    18: 'I1',
+    27: 'S13',
+    36: 'S12',
+    45: 'S11',
+    54: 'VS2',
+    63: 'VS1',
+    72: 'VVS2',
+    81: 'VVS1',
+    90: 'IF',
+
+};
+const grade = {
+    0: 'FAIR',
+    25: 'FAIR',
+    50: 'GOOD',
+    75: 'VERY GOOD',
+    100: 'EXCELLENT',
+};
+const columns = [
+       
+    {
+        title: 'SKU',
+        dataIndex: 'sku',
+        key: 'sku',
+        name: 'SKU',
+        selector: row => row.sku,
+        sortable: true,
+    },
+    {
+        title: 'Shape',
+        dataIndex: 'shape',
+        key: 'shape',
+        name: 'Shape',
+        selector: row => row.shape,
+        sortable: true,
+    },
+    {
+        title: 'Carat',
+        dataIndex: 'carat',
+        key: 'carat',
+        name: 'Carat',
+        selector: row => row.carat,
+        sortable: true,
+    },
+    {
+        title: 'Color',
+        dataIndex: 'color',
+        key: 'color',
+        name: 'Color',
+        selector: row => row.color,
+        sortable: true,
+    },
+    {
+        title: 'Clarity',
+        dataIndex: 'clarity',
+        key: 'clarity',
+        name: 'Clarity',
+        selector: row => row.clarity,
+        sortable: true,
+    },
+    {
+        title: 'Report',
+        dataIndex: 'report',
+        key: 'report',
+        name: 'Report',
+        selector: row => row.report,
+        sortable: true,
+    },
+    {
+        title: 'Price',
+        dataIndex: 'price',
+        key: 'price',
+        name: 'Price',
+        selector: row => row.price,
+        sortable: true,
+    },
+];
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
 export default function DiamondSearch() {
-    const { Handle } = Slider;
-    const handle = props => {
-        const { value, dragging, index, ...restProps } = props;
-        return (
-        <SliderTooltip
-            prefixCls="rc-slider-tooltip"
-            overlay={`${value} %`}
-            visible={dragging}
-            placement="top"
-            key={index}
-        >
-        <Handle value={value} {...restProps} />
-        </SliderTooltip>
-        );
-    };
     const [range, setRange] = useState({
-        carat: [0.08, 11.07],
-        price: [64, 341888],
-        color: [15, 75],
-        clarity: [20, 80],
-        length: [1, 100],
-        polish: [1, 100],
-        table: [1, 100],
-        symmetry:[1, 100],
-        depth: [1, 100],
-        cut: [1, 100],
+        carat: [0.02, 11.07],
+        price: [64,341888],
+        color: [0, 90],
+        clarity: [0, 90],
+        length: [1, 3],
+        polish: [0, 100],
+        table: [0, 100],
+        symmetry:[0, 100],
+        depth: [40.90, 79.70],
+        cut: [0, 100],
+        shape: "Round"
+    });
+    const [right, setRight] = useState({
+        carat: '0.3',
+        shape: 'Round',
+        color: 'L',
+        clarity: 'VS1',
+        sku:'BN-187',
+        report: '7322654715',
        
-    })
+    });
+    const callHttpRequest = (ranges) => {
+        AfterSubmit(ranges)
+    };
+    const [stateDebounceCallHttpRequest] = useState(() =>
+        debounce(callHttpRequest, 300, {
+            leading: false,
+            trailing: true
+        })
+    );
     const handleRange = (values, name) => {
-        setRange({
+        const data = {
             ...range,
             [name]: values
-        });
-    }
+        };
+        setRange(data);
+        stateDebounceCallHttpRequest(data);
+    };
+    const onRowClicked = (row, event) => {
+        setRight({
+           carat: row.carat,
+           shape: row.shape,
+           color: row.color,
+           clarity: row.clarity,
+           sku:row.sku,
+           report: row.report,
+       });
+   };
+   const onRowHover = (row, event) => {
+       console.log("hover");
+   };
+    const [tableData, setTableData] = useState(
+        [
+            {
+                sku: '',
+                shape: '',
+                carat: '',
+                color: '',
+                clarity: '',
+                report: '',
+                price: '',
+                trId: '',
+            },
+        ]
+    )
+    const AfterSubmit = async (range) => {
+        var req = {
+            range:{
+                shapes: range.shape,
+                size_from: range.carat[0],
+                size_to: range.carat[1],
+                price_total_from: range.price[0],
+                price_total_to: range.price[1],
+    
+                color_from: colorAlph[range.color[0]],
+                color_to: colorAlph[range.color[1]],
+                clarity_from: clarAlph[range.clarity[1]],
+                clarity_to: clarAlph[range.clarity[0]],
+                polish_from: grade[range.polish[0]],
+                polish_to: grade[range.polish[1]],
+                symmetry_from: grade[range.symmetry[0]],
+                symmetry_to: grade[range.symmetry[1]],
+                cut_from: grade[range.cut[0]],
+                cut_to: grade[range.cut[1]],
+    
+                depth_percent_from: range.depth[0],
+                depth_percent_to: range.depth[1],
+                table_percent_from: range.table[0],
+                table_percent_to: range.table[1],
+               // meas_length_from: range.length[0],
+               // meas_length_to: range.length[1],
+              //  meas_width_from: range.length[1],
+              //  meas_width_to: range.length[1],
+            }
+        };
+        const url = HOME_URL+'api/backend/rapnet-api';
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json','Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'*'},
+            body: JSON.stringify(req),
+        };
+        try {
+            const response = await fetch(url, requestOptions) 
+            var arr=await response.json();
+            var rows = new Array();
+            var i =0;
+            arr.forEach(e => 
+                {
+                    i++;
+                    rows[i] =
+                        {
+                            sku: e.sku,
+                            shape: e.shape,
+                            carat: e.size,
+                            color: e.color,
+                            clarity: e.clarity,
+                            report: e.report,
+                            price: option_text,
+                            trId: 'RC'+i,
+                        }   
+                })
+            setTableData(rows);
+        } catch (err) {
+            console.log('error: ', err);
+        }
+    
+    };
     const [loadMore, setLoadMore] = React.useState(false);
+    useEffect(()=>{ 
+        AfterSubmit(range);
+    }, []) 
     return (
         <div className='serch-outer diamond-search'>
             <div className='cust-container'>
@@ -73,12 +316,26 @@ export default function DiamondSearch() {
                     <h2 className="title">Search For Diamonds</h2>
                 </div>
                 <div id="searchHeader" className="search-options search-options">
-                    <DiamondHeader />
+                    <div className="inner-search-options">
+                        <h3 className="option-title uppercase">SHAPE</h3>
+                        <div className="shapes">
+                            <ul className='shapes-ul'>
+                                {shapes.map((shape, index) => (
+                                    <li key={index} className={range.shape === shape.name ? 'active' : null} onClick={() => handleRange(shape.name, 'shape')}  >
+                                        <div className="icon shape-round">
+                                            <img src={shape.image} alt={shape.name} />
+                                        </div>
+                                        <div className="text">{shape.name}</div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div className='range-options'>
-                    <div className="inner-range-options">
+                    <div className="inner-range-options carat-slider">
                         <h3 className="option-title uppercase">CARAT</h3>
-                        <Range  tipFormatter={value => `${value}`} value={range.carat} onChange={(values) => handleRange(values, "carat")} allowCross={false} draggableTrack/>
+                        <Range  min={0.02} max={11.07} step={0.01}  tipFormatter={value => `${value}`} value={range.carat} onChange={(values) => handleRange(values, "carat")}   allowCross={false} draggableTrack/>
                         <div className="value-box">
                             <div className="value-left">
                                 <span className='value-span'>{range.carat[0]} </span>
@@ -88,9 +345,9 @@ export default function DiamondSearch() {
                             </div>
                         </div>
                     </div>
-                    <div className="inner-range-options">
+                    <div className="inner-range-options price-slider">
                         <h3 className="option-title uppercase">PRICE</h3>
-                        <Range min={64} max={341888} defaultValue={range.price} tipFormatter={value => `$${value}`} onChange={(values) => handleRange(values, "price")} />
+                        <Range min={64} max={341888} defaultValue={range.price} tipFormatter={value => `$${value}`} onChange={(values) => handleRange(values, "price")}     />
                         <div className="value-box">
                             <div className="value-left">
                                 <span className='value-span'>{range.price[0]} </span>
@@ -102,7 +359,7 @@ export default function DiamondSearch() {
                     </div>
                 </div>
                 <div className='range-options color-range'>
-                    <div className="inner-range-options">
+                    <div className="inner-range-options color-slider">
                         <h3 className="option-title uppercase">COLOR</h3>
                         <div className="value-box">
                             <div className="value-left">
@@ -112,7 +369,7 @@ export default function DiamondSearch() {
                                 <p>Near Colorless</p>
                             </div>
                         </div>
-                        <Range marks={marks} min={9} max={99} step={9}  defaultValue={range.color} onChange={(values) => handleRange(values, "color")} />
+                        <Range marks={colormark} min={0} max={90} step={10}  defaultValue={range.color} onChange={(values) => handleRange(values, "color")}     />
                         <ul className="steps-labels">
                             <li key={'D'}>D</li>
                             <li key={'E'}>E</li>
@@ -124,10 +381,9 @@ export default function DiamondSearch() {
                             <li key={'K'}>K</li>
                             <li key={'L'}>L</li>
                             <li key={'M'}>M</li>
-                            <li key={'N'}>N</li>
                         </ul>
                     </div>
-                    <div className="inner-range-options">
+                    <div className="inner-range-options clarity-slider">
                         <h3 className="option-title uppercase">CLARITY</h3>
                         <div className="value-box">
                             <div className="value-left">
@@ -137,9 +393,10 @@ export default function DiamondSearch() {
                                 <p>Flawless</p>
                             </div>
                         </div>
-                        <Range marks={marks} min={9} max={99} step={9} defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")} />
+                        <Range marks={clarmark} min={0} max={90} step={9} defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")}     />
                         <ul className="steps-labels">
-                            <li key={'12'}>12</li>
+                            <li key={'I3'}>I3</li>
+                            <li key={'I2'}>12</li>
                             <li key={'I1'}>I1</li>
                             <li key={'S13'}>S13</li>
                             <li key={'S12'}>S12</li>
@@ -148,8 +405,7 @@ export default function DiamondSearch() {
                             <li key={'VS1'}>VS1</li>
                             <li key={'VVS2'}>VVS2</li>
                             <li key={'VVS1'}>VVS1</li>
-                            <li key={'FL'}>FL</li>
-                            <li key={'FL2'}>FL</li>
+                            <li key={'IF'}>IF</li>
                         </ul>
                     </div>
                 </div>
@@ -163,9 +419,9 @@ export default function DiamondSearch() {
                     {loadMore && (
                         <div className="advance-container" >
                             <div className='range-options'>
-                                <div className="inner-range-options">
+                                <div className="inner-range-options length-slider">
                                     <h3 className="option-title uppercase">LENGTH TO WIDTH RATIO</h3>
-                                    <Range defaultValue={range.length} onChange={(values) => handleRange(values, "length")} />
+                                    <Range min={1} max={3} step={0.01} defaultValue={range.length} onChange={(values) => handleRange(values, "length")}     />
                                     <div className="value-box">
                                         <div className="value-left">
                                             <span className='value-span'>{range.length[0]} </span>
@@ -175,22 +431,22 @@ export default function DiamondSearch() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="inner-range-options">
+                                <div className="inner-range-options polish-slider">
                                     <h3 className="option-title uppercase">POLISH</h3>
 
-                                    <Range marks={marksLetter} step={4} defaultValue={range.polish} onChange={(values) => handleRange(values, "polish")} />
+                                    <Range  marks={marksLetter} step={25} defaultValue={range.polish} onChange={(values) => handleRange(values, "polish")}     />
                                     <ul className="steps-labels">
-                                        <li key={'good'}>GOOD</li>
-                                        <li key={'vgood'}>VERY GOOD</li>
-                                        <li key={'excellent'}>EXCELLENT</li>
-                                        <li key={'deal'}>IDEAL</li>
+                                        <li key={'polishFair'}>FAIR</li>
+                                        <li key={'polishGood'}>GOOD</li>
+                                        <li key={'polishVgood'}>VERY GOOD</li>
+                                        <li key={'polishExcellent'}>EXCELLENT</li>
                                     </ul>
                                 </div>
                             </div>
                             <div className='range-options'>
-                                <div className="inner-range-options">
+                                <div className="inner-range-options table-slider">
                                     <h3 className="option-title uppercase">TABLE %</h3>
-                                    <Range defaultValue={range.table} onChange={(values) => handleRange(values, "table")} />
+                                    <Range min={0} max={100} step={0.01} defaultValue={range.table} tipFormatter={value => `${value}%`}  onChange={(values) => handleRange(values, "table")}     />
                                     <div className="value-box">
                                         <div className="value-left">
                                             <span className='value-span'>{range.table[0]} </span>
@@ -200,24 +456,23 @@ export default function DiamondSearch() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="inner-range-options">
+                                <div className="inner-range-options symmetry-slider">
                                     <h3 className="option-title uppercase">SYMMETRY</h3>
 
-                                    <Range marks={marksLetter} step={4} defaultValue={range.symmetry} onChange={(values) => handleRange(values, "symmetry")} />
+                                    <Range marks={marksLetter} step={25} defaultValue={range.symmetry} onChange={(values) => handleRange(values, "symmetry")}     />
                                     <ul className="steps-labels">
-                                        <li key={'symmetryFair'}>  FAIR</li>
-                                        <li key={'symmetryExcellent'}>EXCELLENT</li>
+                                        <li key={'symmetryFair'}>FAIR</li>
+                                        <li key={'symmetryGood'}>GOOD</li>
                                         <li key={'symmetryVgood'}>VERY GOOD</li>
-                                        <li key={'symmetryGood'}>GOOD</li>                                     
-                                        <li key={'symmetryDeal'}>IDEAL</li>
+                                        <li key={'symmetryExcellent'}>EXCELLENT</li>
                                     </ul>
                                 </div>
                       
                             </div>
                             <div className='range-options'>
-                                <div className="inner-range-options">
+                                <div className="inner-range-options depth-slider">
                                     <h3 className="option-title uppercase">DEPTH %</h3>
-                                    <Range defaultValue={range.depth} onChange={(values) => handleRange(values, "depth")} />
+                                    <Range min={40.90} max={79.70} step={0.01} defaultValue={range.depth} onChange={(values) => handleRange(values, "depth")}     />
                                     <div className="value-box">
                                         <div className="value-left">
                                             <span className='value-span'>{range.depth[0]} </span>
@@ -227,15 +482,15 @@ export default function DiamondSearch() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="inner-range-options">
+                                <div className="inner-range-options cut-slider">
                                     <h3 className="option-title uppercase">CUT</h3>
 
-                                    <Range marks={marksLetter} step={4} defaultValue={range.cut} onChange={(values) => handleRange(values, "cut")} />
+                                    <Range marks={marksLetter} step={25} defaultValue={range.cut} onChange={(values) => handleRange(values, "cut")}     />
                                     <ul className="steps-labels">
+                                        <li key={'cutFair'}>FAIR</li>
                                         <li key={'cutGood'}>GOOD</li>
                                         <li key={'cutVgood'}>VERY GOOD</li>
                                         <li key={'cutExcellent'}>EXCELLENT</li>
-                                        <li key={'cutDeal'}>IDEAL</li>
                                     </ul>
                                 </div>
                             </div>
@@ -243,8 +498,65 @@ export default function DiamondSearch() {
                     )}
                 </div>
                 <div id="diamondCompareTable" className="diamond-search-tab-view">
-                    <DiamondTable />
+                    <Tabs>
+                        <TabList>
+                            <Tab>
+                                Results <span>(4)</span>
+                            </Tab>
+                            <Tab>
+                                Comparison <span>(0)</span>
+                            </Tab>
+                        </TabList>
 
+                        <TabPanel>
+                            <div className='table-info-outer'>
+                                <div className="cust-data-table">
+                                    <DataTable columns={columns} data={tableData} selectableRows  pagination highlightOnHover overflowY overflowX onRowClicked={onRowClicked} onRowHovered={onRowHover} />
+                                </div>
+                                <div className='table-info'>
+                                    <div className='table-info-inner'>
+                                        <h4>Diamond Information</h4>
+                                        <ul>
+                                            <li key={'li1'} ><b>Carat weight:</b> {right.carat}</li>
+                                            <li key={'li2'} ><b>Shape:</b> {right.shape}</li>
+                                            <li key={'li3'} ><b>Color:</b> {right.color}</li>
+                                            <li key={'li4'} ><b>Clarity:</b>  {right.clarity}</li>
+                                            <li key={'li5'} ><b>Stock Number:</b> {right.sku}</li>
+                                            <li key={'li6'} ><b>Report:</b> {right.report}</li>
+                                        </ul>
+                                        <div className='btn-outer'>
+                                            <a href="#" className='cust-btn'> Add to cart</a>
+                                            <a href="#" className='cust-btn'> Inquire Now</a>
+                                            <a href="#"> View more details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </TabPanel>
+                        <TabPanel>
+                            <div className='table-info-outer'>
+                            <DataTable columns={columns} selectableRows  pagination />
+                                <div className='table-info'>
+                                    <div className='table-info-inner'>
+                                        <h4>Diamond Information</h4>
+                                        <ul>
+                                            <li key={'li1'} ><b>Carat weight:</b> </li>
+                                            <li key={'li2'} ><b>Shape:</b> </li>
+                                            <li key={'li3'} ><b>Color:</b> </li>
+                                            <li key={'li4'} ><b>Clarity:</b> </li>
+                                            <li key={'li5'} ><b>Stock Number:</b> </li>
+                                            <li key={'li6'} ><b>Report:</b> </li>
+                                        </ul>
+                                        <div className='btn-outer'>
+                                            <a href="#" className='cust-btn'> Add to cart</a>
+                                            <a href="#" className='cust-btn'> Inquire Now</a>
+                                            <a href="#"> View more details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </TabPanel>
+                    </Tabs>
                 </div>
             </div>
         </div>

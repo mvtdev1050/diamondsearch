@@ -502,7 +502,12 @@ ul.steps-labels {
   ::-webkit-scrollbar-thumb:hover {
     background: var(--color);
   }
-
+  .color-slider .rc-slider-tooltip, .clarity-slider .rc-slider-tooltip, .polish-slider .rc-slider-tooltip, .symmetry-slider .rc-slider-tooltip, .cut-slider .rc-slider-tooltip  {
+        display: none !important;
+    }
+    .rdt_TableCell {
+        padding: 0 10px !important;
+    }
 
 /* MEDIA CSS */
 @media(max-width: 767px) {
