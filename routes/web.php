@@ -21,10 +21,12 @@ Route::get('/auth', 'AppController@auth');
 Route::get('/callback', 'AppController@callback');
 
 Route::post('/backend/admin-product', 'BackendController@adminProduct');
+Route::post('/backend/current-user', 'BackendController@currentUser');
 Route::post('/backend/save-setting', 'BackendController@saveSetting');
 
 Route::get('/dashboard', 'PageController@viewDashboard');
 Route::get('/diamond-search', 'PageController@diamondPage');
+Route::get('/diamond-search/product/{id}', 'PageController@diamondProduct');
 Route::get('/diamond-local', 'PageController@diamondLocal');
 Route::post('/webhook/app/uninstall', 'AppController@appUninstalled');
 

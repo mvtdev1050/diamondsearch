@@ -66,6 +66,24 @@ class BackendController extends Controller
         return "end";
        
     }
+    public function currentUser(Request $request)
+    {
+        $data=array();
+        $method='POST';
+        $url = "https://" . Session::get('storename') . "/admin/users/current.json";   
+        $r = Store::select('access_token')->where(['store_name' => Session::get('storename')])->where(['status'=> '1'])->first();
+        if(!empty($r['access_token'])){
+            $header = array(
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+                'X-Shopify-Access-Token' => $r['access_token']
+            );
+            $resp = $this->hitApi($method, $url, $header,json_encode($data));
+            return json_encode($resp);
+        }
+        return "end";
+       
+    }
     public function rapnetApi(Request $request)
     { 
 

@@ -9,10 +9,13 @@ import '../../../sass/custom.css';
 import * as ReactIcon from 'react-icons/fa';
 import debounce from 'lodash/debounce';
 import DataTable from 'react-data-table-component';
+import Loader from "react-loader-spinner";
 
 if (window.option){var option=window.option;} else{var option='Login';}
 if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
 const HOME_URL =window.home_url;
+const origin   = window.location.origin; 
+const href   = window.location.href; 
 const shapes = [
     {
         name: 'Round',
@@ -115,6 +118,10 @@ const grade = {
     75: 'VERY GOOD',
     100: 'EXCELLENT',
 };
+const clickHandler = (row, event) => {  
+    var origin   = window.location.origin; 
+    window.open(origin+'/account/login');
+};
 const columns = [
        
     {
@@ -170,8 +177,10 @@ const columns = [
         dataIndex: 'price',
         key: 'price',
         name: 'Price',
-        selector: row => row.price,
-        sortable: true,
+        ignoreRowClick: true,
+        allowOverflow: true,
+        button: true,
+        cell:(row) => <a href="#" onClick={clickHandler} id={row.ID}>{option_text}</a>,
     },
 ];
 const { createSliderWithTooltip } = Slider;
@@ -197,18 +206,20 @@ export default function DiamondSearch() {
         clarity: 'VS1',
         sku:'BN-187',
         report: '7322654715',
+        link:href+'/product/BN-187'
        
     });
     const callHttpRequest = (ranges) => {
         AfterSubmit(ranges)
     };
     const [stateDebounceCallHttpRequest] = useState(() =>
-        debounce(callHttpRequest, 300, {
+        debounce(callHttpRequest, 100, {
             leading: false,
             trailing: true
         })
     );
     const handleRange = (values, name) => {
+        setPending(true);
         const data = {
             ...range,
             [name]: values
@@ -224,12 +235,28 @@ export default function DiamondSearch() {
            clarity: row.clarity,
            sku:row.sku,
            report: row.report,
+           link: href+'/product/'+row.sku,
        });
-   };
-   const onRowHover = (row, event) => {
-       console.log("hover");
-   };
+    };
+    const onSelectedRowChange = (rows, event) => {
+        setCount1(rows['selectedCount']);
+        setCompareTable(rows['selectedRows']);
+    };
     const [tableData, setTableData] = useState(
+        [
+            {
+                sku: '',
+                shape: '',
+                carat: '',
+                color: '',
+                clarity: '',
+                report: '',
+                price: '',
+                trId: '',
+            },
+        ]
+    )
+    const [compareData, setCompareTable] = useState(
         [
             {
                 sku: '',
@@ -299,12 +326,17 @@ export default function DiamondSearch() {
                             trId: 'RC'+i,
                         }   
                 })
+            setCount(i);
             setTableData(rows);
+            setPending(false);
         } catch (err) {
             console.log('error: ', err);
         }
     
     };
+    const [pending, setPending] = useState(true);
+    const [count, setCount] = React.useState(false);
+    const [count1, setCount1] = useState(false);
     const [loadMore, setLoadMore] = React.useState(false);
     useEffect(()=>{ 
         AfterSubmit(range);
@@ -501,17 +533,19 @@ export default function DiamondSearch() {
                     <Tabs>
                         <TabList>
                             <Tab>
-                                Results <span>(4)</span>
+                                Results <span>({count})</span>
                             </Tab>
                             <Tab>
-                                Comparison <span>(0)</span>
+                                Comparison <span>({count1})</span>
                             </Tab>
                         </TabList>
 
                         <TabPanel>
                             <div className='table-info-outer'>
                                 <div className="cust-data-table">
-                                    <DataTable columns={columns} data={tableData} selectableRows  pagination highlightOnHover overflowY overflowX onRowClicked={onRowClicked} onRowHovered={onRowHover} />
+                                <DataTable columns={columns} data={tableData} selectableRows  pagination highlightOnHover overflowY overflowX 
+                                    onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange} 
+                                    progressPending={pending} progressComponent={<Loader type="TailSpin" color="#000"/>}/>
                                 </div>
                                 <div className='table-info'>
                                     <div className='table-info-inner'>
@@ -525,9 +559,8 @@ export default function DiamondSearch() {
                                             <li key={'li6'} ><b>Report:</b> {right.report}</li>
                                         </ul>
                                         <div className='btn-outer'>
-                                            <a href="#" className='cust-btn'> Add to cart</a>
                                             <a href="#" className='cust-btn'> Inquire Now</a>
-                                            <a href="#"> View more details</a>
+                                            <a href={right.link} target='_blank'> View more details</a>
                                         </div>
                                     </div>
                                 </div>
@@ -535,7 +568,9 @@ export default function DiamondSearch() {
                         </TabPanel>
                         <TabPanel>
                             <div className='table-info-outer'>
-                            <DataTable columns={columns} selectableRows  pagination />
+                            <div className="cust-data-table">
+                                <DataTable columns={columns} data={compareData} selectableRows  pagination />
+                            </div>
                                 <div className='table-info'>
                                     <div className='table-info-inner'>
                                         <h4>Diamond Information</h4>
@@ -548,7 +583,6 @@ export default function DiamondSearch() {
                                             <li key={'li6'} ><b>Report:</b> </li>
                                         </ul>
                                         <div className='btn-outer'>
-                                            <a href="#" className='cust-btn'> Add to cart</a>
                                             <a href="#" className='cust-btn'> Inquire Now</a>
                                             <a href="#"> View more details</a>
                                         </div>
