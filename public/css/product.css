@@ -1,0 +1,59 @@
+.product-wrap{
+    padding:30px 0px;
+}
+.product-wrap hr {
+    margin: 2rem 0 !important;
+}
+.product-wrap h4{
+    font-weight: 600;
+    font-size: 16px;
+    color: #000;
+    text-decoration:underline;
+    margin-bottom:10px;
+}
+.product-img{
+    float:left;
+    width: 48%;
+    padding:10px;
+}
+.product-img img{
+    max-width:100%;
+}
+.product-desc{
+    float:right;
+    width:48%;
+    padding:10px;
+}
+.product-left{
+    float:left;
+    width: 50%;
+}
+.product-right{
+    float:right;
+    width: 50%;
+}
+h4.product-title {
+    font-weight: 600;
+    font-size: 18px;
+    background: #fafafa;
+    padding: 15px 10px;
+    text-align: center;
+    color: #000;
+    text-decoration:none;
+}
+.diamond-details{
+    padding-top:20px;
+
+}
+.diamond-actions{
+    margin-top:10px;
+}
+.diamond-actions .add-to-bag{
+    background: var(--color);
+    color: #fff;
+    text-decoration: none;
+    padding: 7px 30px;
+    width: 45%;
+    margin: 0px 0 20px;
+    font-size: 18px;
+}

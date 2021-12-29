@@ -423,6 +423,14 @@ ul.steps-labels {
 .diamond-search-tab-view td.rc-table-cell.rc-table-cell-row-hover {
     background: rgba(0, 0, 0, 0.2);
 }
+.cust-data-table svg{
+    margin:auto;
+    display:block;
+    background:none;
+}
+.table-info{
+background:#fff;
+}
 
 .table-info-outer .table-info {
     width: 40%;
@@ -456,7 +464,19 @@ ul.steps-labels {
     text-align: center;
     color: #000;
 }
-
+.diamond-info{
+    display:flex;
+}
+.info-left{
+    width:48%;
+    float:left;
+    padding:10px;
+}
+.info-right{
+    width:48%;
+    float:right;
+    padding:10px;
+}
 .btn-outer {
     text-align: center;
     display: flex;

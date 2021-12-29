@@ -10,6 +10,7 @@ import * as ReactIcon from 'react-icons/fa';
 import debounce from 'lodash/debounce';
 import DataTable from 'react-data-table-component';
 import Loader from "react-loader-spinner";
+import { nodeName } from 'jquery';
 
 if (window.option){var option=window.option;} else{var option='Login';}
 if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
@@ -181,6 +182,7 @@ const columns = [
         allowOverflow: true,
         button: true,
         cell:(row) => <a href="#" onClick={clickHandler} id={row.ID}>{option_text}</a>,
+
     },
 ];
 const { createSliderWithTooltip } = Slider;
@@ -200,13 +202,20 @@ export default function DiamondSearch() {
         shape: "Round"
     });
     const [right, setRight] = useState({
-        carat: '0.3',
-        shape: 'Round',
-        color: 'L',
-        clarity: 'VS1',
-        sku:'BN-187',
-        report: '7322654715',
-        link:href+'/product/BN-187'
+        carat: '',
+        shape: '',
+        color: '',
+        clarity: '',
+        sku:'',
+        report: '',
+        diamond_id:'',
+        symmetry:'',
+        polish:'',
+        cut:'',
+        lab:'',
+        table:'',
+        depth:'',
+        link:href+'/product/'
        
     });
     const callHttpRequest = (ranges) => {
@@ -235,7 +244,17 @@ export default function DiamondSearch() {
            clarity: row.clarity,
            sku:row.sku,
            report: row.report,
-           link: href+'/product/'+row.sku,
+           diamond_id: row.diamond_id,
+           symmetry: row.symmetry,
+           polish: row.polish,
+           cut: row.cut,
+           lab: row.lab,
+           depth: row.depth,
+           table: row.table,
+           m_length: row.m_length,
+           m_width: row.m_width,
+           m_depth: row.m_depth,
+           link: href+'/product/'+row.diamond_id,
        });
     };
     const onSelectedRowChange = (rows, event) => {
@@ -252,6 +271,7 @@ export default function DiamondSearch() {
                 clarity: '',
                 report: '',
                 price: '',
+                diamond_id:'',
                 trId: '',
             },
         ]
@@ -266,6 +286,7 @@ export default function DiamondSearch() {
                 clarity: '',
                 report: '',
                 price: '',
+                diamond_id:'',
                 trId: '',
             },
         ]
@@ -300,7 +321,7 @@ export default function DiamondSearch() {
               //  meas_width_to: range.length[1],
             }
         };
-        const url = HOME_URL+'api/backend/rapnet-api';
+        const url = HOME_URL+'backend/get-diamonds';
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json','Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'*'},
@@ -313,17 +334,48 @@ export default function DiamondSearch() {
             var i =0;
             arr.forEach(e => 
                 {
+                    if(i==0){
+                        setRight({
+                            carat: e.size,
+                            shape: e.shape,
+                            color: e.color,
+                            clarity: e.clarity,
+                            sku:e.stock_num,
+                            report: e.cert_num,
+                            diamond_id: e.diamond_id,
+                            symmetry: e.symmetry,
+                            polish: e.polish,
+                            cut: e.cut,
+                            lab: e.lab,
+                            depth: e.depth_percent,
+                            table: e.table_percent,
+                            m_length: e.meas_length,
+                            m_width: e.meas_width,
+                            m_depth: e.meas_depth,
+                            link: href+'/product/'+e.diamond_id,
+                        });
+                    }
                     i++;
                     rows[i] =
                         {
-                            sku: e.sku,
+                            trId: 'RC'+i,
+                            sku: e.stock_num,
                             shape: e.shape,
                             carat: e.size,
                             color: e.color,
                             clarity: e.clarity,
-                            report: e.report,
-                            price: option_text,
-                            trId: 'RC'+i,
+                            report: e.cert_num,
+                            price: e.price,
+                            diamond_id: e.diamond_id,
+                            symmetry: e.symmetry,
+                            cut: e.cut,
+                            polish: e.polish,
+                            lab: e.lab,
+                            table: e.table_percent,
+                            depth: e.depth_percent,
+                            m_length: e.meas_length,
+                            m_width: e.meas_width,
+                            m_depth: e.meas_depth,
                         }   
                 })
             setCount(i);
@@ -335,9 +387,9 @@ export default function DiamondSearch() {
     
     };
     const [pending, setPending] = useState(true);
-    const [count, setCount] = React.useState(false);
-    const [count1, setCount1] = useState(false);
-    const [loadMore, setLoadMore] = React.useState(false);
+    const [count, setCount] = useState(0);
+    const [count1, setCount1] = useState(0);
+    const [loadMore, setLoadMore] = useState(false);
     useEffect(()=>{ 
         AfterSubmit(range);
     }, []) 
@@ -544,20 +596,38 @@ export default function DiamondSearch() {
                             <div className='table-info-outer'>
                                 <div className="cust-data-table">
                                 <DataTable columns={columns} data={tableData} selectableRows  pagination highlightOnHover overflowY overflowX 
-                                    onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange} 
+                                    onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange}
                                     progressPending={pending} progressComponent={<Loader type="TailSpin" color="#000"/>}/>
                                 </div>
                                 <div className='table-info'>
                                     <div className='table-info-inner'>
                                         <h4>Diamond Information</h4>
-                                        <ul>
-                                            <li key={'li1'} ><b>Carat weight:</b> {right.carat}</li>
-                                            <li key={'li2'} ><b>Shape:</b> {right.shape}</li>
-                                            <li key={'li3'} ><b>Color:</b> {right.color}</li>
-                                            <li key={'li4'} ><b>Clarity:</b>  {right.clarity}</li>
-                                            <li key={'li5'} ><b>Stock Number:</b> {right.sku}</li>
-                                            <li key={'li6'} ><b>Report:</b> {right.report}</li>
-                                        </ul>
+                                        <div className='diamond-info'>
+                                            <div className="info-left">
+                                                <ul>
+                                                    <li key={'li1'} ><b>Carat weight:</b> {right.carat}</li>
+                                                    <li key={'li2'} ><b>Shape:</b> {right.shape}</li>
+                                                    <li key={'li3'} ><b>Color:</b> {right.color}</li>
+                                                    <li key={'li4'} ><b>Clarity:</b>  {right.clarity}</li>
+                                                    <li key={'li5'} ><b>Lab:</b> {right.lab}</li>
+                                                    <li key={'li6'} ><b>Report:</b> {right.report}</li>
+                                                    <li key={'li7'} ><b>Stock Number:</b> {right.sku}</li>
+
+                                                </ul>
+                                            </div>
+                                            <div className="info-right">
+                                                <ul>
+                                                    <li key={'li8'} ><b>Measurements:</b> {right.m_length} x {right.m_width} x {right.m_depth} </li>
+                                                    <li key={'li9'} ><b>Table:</b> {right.table}</li>
+                                                    <li key={'li10'} ><b>Depth:</b> {right.depth}</li>
+                                                    <li key={'li11'} ><b>Symmetry:</b> {right.symmetry}</li>
+                                                    <li key={'li12'} ><b>Polish:</b> {right.polish}</li>
+                                                    <li key={'li13'} ><b>Cut:</b> {right.cut}</li>
+                                                   
+
+                                                </ul>
+                                            </div>
+                                        </div>
                                         <div className='btn-outer'>
                                             <a href="#" className='cust-btn'> Inquire Now</a>
                                             <a href={right.link} target='_blank'> View more details</a>
@@ -569,19 +639,36 @@ export default function DiamondSearch() {
                         <TabPanel>
                             <div className='table-info-outer'>
                             <div className="cust-data-table">
-                                <DataTable columns={columns} data={compareData} selectableRows  pagination />
+                                <DataTable columns={columns} data={compareData} selectableRows  pagination highlightOnHover overflowY overflowX 
+                                onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange} 
+                                progressPending={pending} progressComponent={<Loader type="TailSpin" color="#000"/>}/>
                             </div>
                                 <div className='table-info'>
                                     <div className='table-info-inner'>
                                         <h4>Diamond Information</h4>
-                                        <ul>
-                                            <li key={'li1'} ><b>Carat weight:</b> </li>
-                                            <li key={'li2'} ><b>Shape:</b> </li>
-                                            <li key={'li3'} ><b>Color:</b> </li>
-                                            <li key={'li4'} ><b>Clarity:</b> </li>
-                                            <li key={'li5'} ><b>Stock Number:</b> </li>
-                                            <li key={'li6'} ><b>Report:</b> </li>
-                                        </ul>
+                                        <div className='diamond-info'>
+                                            <div className="info-left">
+                                                <ul>
+                                                    <li key={'li1'} ><b>Carat weight:</b> {right.carat}</li>
+                                                    <li key={'li2'} ><b>Shape:</b> {right.shape}</li>
+                                                    <li key={'li3'} ><b>Color:</b> {right.color}</li>
+                                                    <li key={'li4'} ><b>Clarity:</b>  {right.clarity}</li>
+                                                    <li key={'li5'} ><b>Lab:</b> {right.lab}</li>
+                                                    <li key={'li6'} ><b>Report:</b> {right.report}</li>
+                                                    <li key={'li7'} ><b>Stock Number:</b> {right.sku}</li>
+                                                </ul>
+                                            </div>
+                                            <div className="info-right">
+                                                <ul>
+                                                    <li key={'li8'} ><b>Measurements:</b> {right.m_length} x {right.m_width} x {right.m_depth} </li>
+                                                    <li key={'li9'} ><b>Table:</b> {right.table}</li>
+                                                    <li key={'li10'} ><b>Depth:</b> {right.depth}</li>
+                                                    <li key={'li11'} ><b>Symmetry:</b> {right.symmetry}</li>
+                                                    <li key={'li12'} ><b>Polish:</b> {right.polish}</li>
+                                                    <li key={'li13'} ><b>Cut:</b> {right.cut}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                         <div className='btn-outer'>
                                             <a href="#" className='cust-btn'> Inquire Now</a>
                                             <a href="#"> View more details</a>

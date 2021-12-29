@@ -7,12 +7,15 @@ import 'react-tabs/style/react-tabs.css';
 import 'rc-slider/assets/index.css';
 import '../../../sass/custom.css';
 import * as ReactIcon from 'react-icons/fa';
-import debounce from 'lodash.debounce';
+import debounce from 'lodash/debounce';
 import DataTable from 'react-data-table-component';
+import Loader from "react-loader-spinner";
 
 if (window.option){var option=window.option;} else{var option='Login';}
 if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
 const HOME_URL =window.home_url;
+const origin   = window.location.origin; 
+const href   = window.location.href; 
 const shapes = [
     {
         name: 'Round',
@@ -115,6 +118,10 @@ const grade = {
     75: 'VERY GOOD',
     100: 'EXCELLENT',
 };
+const clickHandler = (row, event) => {  
+    var origin   = window.location.origin; 
+    window.open(origin+'/account/login');
+};
 const columns = [
        
     {
@@ -170,18 +177,15 @@ const columns = [
         dataIndex: 'price',
         key: 'price',
         name: 'Price',
-        selector: row => row.price,
-        sortable: true,
+        ignoreRowClick: true,
+        allowOverflow: true,
+        button: true,
+        cell:(row) => <a href="#" onClick={clickHandler} id={row.ID}>{option_text}</a>,
     },
 ];
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
-
 export default function DiamondSearch() {
-    var rows = new Array();
-    var i =0;
-   
-    const [activeShape, setActiveShape] =  useState('Round');
     const [range, setRange] = useState({
         carat: [0.02, 11.07],
         price: [64,341888],
@@ -193,7 +197,7 @@ export default function DiamondSearch() {
         symmetry:[0, 100],
         depth: [40.90, 79.70],
         cut: [0, 100],
-       
+        shape: "Round"
     });
     const [right, setRight] = useState({
         carat: '0.3',
@@ -202,79 +206,26 @@ export default function DiamondSearch() {
         clarity: 'VS1',
         sku:'BN-187',
         report: '7322654715',
+        link:href+'/product/BN-187'
        
     });
-    const AfterSubmit = (shape) => {
-        if(shape){ var shapes=shape;}
-        else{var shapes=activeShape;}
-        var req = {
-            range:{
-                shapes: shapes,
-                size_from: range.carat[0],
-                size_to: range.carat[1],
-                price_total_from: range.price[0],
-                price_total_to: range.price[1],
-
-                color_from: colorAlph[range.color[0]],
-                color_to: colorAlph[range.color[1]],
-                clarity_from: clarAlph[range.clarity[1]],
-                clarity_to: clarAlph[range.clarity[0]],
-                polish_from: grade[range.polish[0]],
-                polish_to: grade[range.polish[1]],
-                symmetry_from: grade[range.symmetry[0]],
-                symmetry_to: grade[range.symmetry[1]],
-                cut_from: grade[range.cut[0]],
-                cut_to: grade[range.cut[1]],
-
-                depth_percent_from: range.depth[0],
-                depth_percent_to: range.depth[1],
-                table_percent_from: range.table[0],
-                table_percent_to: range.table[1],
-               // meas_length_from: range.length[0],
-               // meas_length_to: range.length[1],
-              //  meas_width_from: range.length[1],
-              //  meas_width_to: range.length[1],
-            }
-        };
-        const url = HOME_URL+'api/backend/rapnet-api';
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json','Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'*'},
-            body: JSON.stringify(req),
-        };
-        return fetch(url, requestOptions)
-            .then(response => response.json())
-            .catch(error => {console.error('There was an error!', error);})
+    const callHttpRequest = (ranges) => {
+        AfterSubmit(ranges)
     };
-    const handleAfter = (shape) => {
-        AfterSubmit(shape).then((arr) => {arr.forEach(e => 
-            {
-                i++;
-                rows[i] =
-                    {
-                        sku: e.sku,
-                        shape: e.shape,
-                        carat: e.size,
-                        color: e.color,
-                        clarity: e.clarity,
-                        report: e.report,
-                        price: option_text,
-                        trId: 'RC'+i,
-                    }   
-            })
-            setTableData(rows);
+    const [stateDebounceCallHttpRequest] = useState(() =>
+        debounce(callHttpRequest, 100, {
+            leading: false,
+            trailing: true
         })
-    }
+    );
     const handleRange = (values, name) => {
-        setRange({
+        setPending(true);
+        const data = {
             ...range,
             [name]: values
-        });
-        handleAfter();   
-    };
-    const handleActiveShape = (name) => {
-        setActiveShape(name);   
-        handleAfter(name);   
+        };
+        setRange(data);
+        stateDebounceCallHttpRequest(data);
     };
     const onRowClicked = (row, event) => {
         setRight({
@@ -284,8 +235,13 @@ export default function DiamondSearch() {
            clarity: row.clarity,
            sku:row.sku,
            report: row.report,
+           link: href+'/product/'+row.sku,
        });
-   };
+    };
+    const onSelectedRowChange = (rows, event) => {
+        setCount1(rows['selectedCount']);
+        setCompareTable(rows['selectedRows']);
+    };
     const [tableData, setTableData] = useState(
         [
             {
@@ -300,9 +256,90 @@ export default function DiamondSearch() {
             },
         ]
     )
+    const [compareData, setCompareTable] = useState(
+        [
+            {
+                sku: '',
+                shape: '',
+                carat: '',
+                color: '',
+                clarity: '',
+                report: '',
+                price: '',
+                trId: '',
+            },
+        ]
+    )
+    const AfterSubmit = async (range) => {
+        var req = {
+            range:{
+                shapes: range.shape,
+                size_from: range.carat[0],
+                size_to: range.carat[1],
+                price_total_from: range.price[0],
+                price_total_to: range.price[1],
+    
+                color_from: colorAlph[range.color[0]],
+                color_to: colorAlph[range.color[1]],
+                clarity_from: clarAlph[range.clarity[1]],
+                clarity_to: clarAlph[range.clarity[0]],
+                polish_from: grade[range.polish[0]],
+                polish_to: grade[range.polish[1]],
+                symmetry_from: grade[range.symmetry[0]],
+                symmetry_to: grade[range.symmetry[1]],
+                cut_from: grade[range.cut[0]],
+                cut_to: grade[range.cut[1]],
+    
+                depth_percent_from: range.depth[0],
+                depth_percent_to: range.depth[1],
+                table_percent_from: range.table[0],
+                table_percent_to: range.table[1],
+               // meas_length_from: range.length[0],
+               // meas_length_to: range.length[1],
+              //  meas_width_from: range.length[1],
+              //  meas_width_to: range.length[1],
+            }
+        };
+        const url = HOME_URL+'backend/get-diamonds';
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json','Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'*'},
+            body: JSON.stringify(req),
+        };
+        try {
+            const response = await fetch(url, requestOptions) 
+            var arr=await response.json();
+            var rows = new Array();
+            var i =0;
+            arr.forEach(e => 
+                {
+                    i++;
+                    rows[i] =
+                        {
+                            sku: e.sku,
+                            shape: e.shape,
+                            carat: e.size,
+                            color: e.color,
+                            clarity: e.clarity,
+                            report: e.report,
+                            price: option_text,
+                            trId: 'RC'+i,
+                        }   
+                })
+            setCount(i);
+            setTableData(rows);
+            setPending(false);
+        } catch (err) {
+            console.log('error: ', err);
+        }
+    
+    };
+    const [pending, setPending] = useState(true);
+    const [count, setCount] = React.useState(false);
+    const [count1, setCount1] = useState(false);
     const [loadMore, setLoadMore] = React.useState(false);
     useEffect(()=>{ 
-        handleAfter();
+        AfterSubmit(range);
     }, []) 
     return (
         <div className='serch-outer diamond-search'>
@@ -316,7 +353,7 @@ export default function DiamondSearch() {
                         <div className="shapes">
                             <ul className='shapes-ul'>
                                 {shapes.map((shape, index) => (
-                                    <li key={index} className={activeShape === shape.name ? 'active' : null} onClick={() => handleActiveShape(shape.name)}  >
+                                    <li key={index} className={range.shape === shape.name ? 'active' : null} onClick={() => handleRange(shape.name, 'shape')}  >
                                         <div className="icon shape-round">
                                             <img src={shape.image} alt={shape.name} />
                                         </div>
@@ -496,17 +533,19 @@ export default function DiamondSearch() {
                     <Tabs>
                         <TabList>
                             <Tab>
-                                Results <span>(4)</span>
+                                Results <span>({count})</span>
                             </Tab>
                             <Tab>
-                                Comparison <span>(0)</span>
+                                Comparison <span>({count1})</span>
                             </Tab>
                         </TabList>
 
                         <TabPanel>
                             <div className='table-info-outer'>
                                 <div className="cust-data-table">
-                                    <DataTable columns={columns} data={tableData} selectableRows  pagination highlightOnHover overflowY overflowX onRowClicked={onRowClicked} />
+                                <DataTable columns={columns} data={tableData} selectableRows  pagination highlightOnHover overflowY overflowX 
+                                    onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange} 
+                                    progressPending={pending} progressComponent={<Loader type="TailSpin" color="#000"/>}/>
                                 </div>
                                 <div className='table-info'>
                                     <div className='table-info-inner'>
@@ -520,9 +559,8 @@ export default function DiamondSearch() {
                                             <li key={'li6'} ><b>Report:</b> {right.report}</li>
                                         </ul>
                                         <div className='btn-outer'>
-                                            <a href="#" className='cust-btn'> Add to cart</a>
                                             <a href="#" className='cust-btn'> Inquire Now</a>
-                                            <a href="#"> View more details</a>
+                                            <a href={right.link} target='_blank'> View more details</a>
                                         </div>
                                     </div>
                                 </div>
@@ -530,7 +568,9 @@ export default function DiamondSearch() {
                         </TabPanel>
                         <TabPanel>
                             <div className='table-info-outer'>
-                            <DataTable columns={columns} selectableRows  pagination />
+                            <div className="cust-data-table">
+                                <DataTable columns={columns} data={compareData} selectableRows  pagination />
+                            </div>
                                 <div className='table-info'>
                                     <div className='table-info-inner'>
                                         <h4>Diamond Information</h4>
@@ -543,7 +583,6 @@ export default function DiamondSearch() {
                                             <li key={'li6'} ><b>Report:</b> </li>
                                         </ul>
                                         <div className='btn-outer'>
-                                            <a href="#" className='cust-btn'> Add to cart</a>
                                             <a href="#" className='cust-btn'> Inquire Now</a>
                                             <a href="#"> View more details</a>
                                         </div>

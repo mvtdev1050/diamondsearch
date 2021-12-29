@@ -66,25 +66,8 @@ class BackendController extends Controller
         return "end";
        
     }
-    public function currentUser(Request $request)
-    {
-        $data=array();
-        $method='POST';
-        $url = "https://" . Session::get('storename') . "/admin/users/current.json";   
-        $r = Store::select('access_token')->where(['store_name' => Session::get('storename')])->where(['status'=> '1'])->first();
-        if(!empty($r['access_token'])){
-            $header = array(
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-                'X-Shopify-Access-Token' => $r['access_token']
-            );
-            $resp = $this->hitApi($method, $url, $header,json_encode($data));
-            return json_encode($resp);
-        }
-        return "end";
-       
-    }
-    public function rapnetApi(Request $request)
+
+    public function getDiamonds(Request $request)
     { 
 
         $request_json = [];
@@ -113,18 +96,29 @@ class BackendController extends Controller
         $result = curl_exec($ch);
         $response = json_decode($result, true);
         $arr = [];
-        $i=0;
         if(!empty($response['response']['body']['diamonds'])){
-            foreach($response['response']['body']['diamonds'] as $diamond){
-                $arr[$i]['color']=$diamond['color'];
-                $arr[$i]['shape']=$diamond['shape'];
-                $arr[$i]['size']=$diamond['size'];
-                $arr[$i]['clarity']=$diamond['clarity'];
-                $arr[$i]['price']=$diamond['total_sales_price'];
-                $arr[$i]['sku']=$diamond['stock_num'];
-                $arr[$i]['report']=$diamond['cert_num'];
-                $i++;
-            }
+            $arr=$response['response']['body']['diamonds'];
+        }
+        return $arr;
+    }
+    public function singleDiamond(Request $request)
+    { 
+
+        $request_json = [];
+        $request_json['request']['header']['username'] = 'f4ickp8pctfwszxcd9mff8hmhb7ixv'; 
+        $request_json['request']['header']['password'] = 's7wwA8yg'; 
+        $request_json["request"]["body"]["diamond_id"] = $request->diamond_id; 
+        $request_json = json_encode($request_json);
+        $ch = curl_init('https://technet.rapaport.com/HTTP/JSON/RetailFeed/GetSingleDiamond.aspx');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $request_json);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        $result = curl_exec($ch);
+        $response = json_decode($result, true);
+        $arr = [];
+        if(!empty($response['response']['body']['diamond'])){
+            $arr=$response['response']['body']['diamond'];
         }
         return $arr;
     }

@@ -9,10 +9,16 @@ import '../../../sass/custom.css';
 import * as ReactIcon from 'react-icons/fa';
 import debounce from 'lodash/debounce';
 import DataTable from 'react-data-table-component';
+import Loader from "react-loader-spinner";
 
 if (window.option){var option=window.option;} else{var option='Login';}
-if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
+if(option=='view'){var option_text='View Product';}
+else if(option=='call'){var option_text='Call Now';}
+else{var option_text='Login For Price';}
+
 const HOME_URL =window.home_url;
+const origin   = window.location.origin; 
+const href   = window.location.href; 
 const shapes = [
     {
         name: 'Round',
@@ -115,6 +121,9 @@ const grade = {
     75: 'VERY GOOD',
     100: 'EXCELLENT',
 };
+const clickHandler = (row, event) => {  
+    window.open(origin+'/account/login');
+};
 const columns = [
        
     {
@@ -170,14 +179,15 @@ const columns = [
         dataIndex: 'price',
         key: 'price',
         name: 'Price',
-        selector: row => row.price,
-        sortable: true,
+        ignoreRowClick: true,
+        allowOverflow: true,
+        button: true,
+        cell:(row) => <a href="#" onClick={clickHandler} id={row.ID}>{option_text}</a>,
     },
 ];
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
 export default function DiamondLocal() {
-
     const [range, setRange] = useState({
         carat: [0.02, 11.07],
         price: [64,341888],
@@ -198,6 +208,7 @@ export default function DiamondLocal() {
         clarity: 'VS1',
         sku:'BN-187',
         report: '7322654715',
+        link:href+'/product/BN-187'
        
     });
     const callHttpRequest = (ranges) => {
@@ -210,6 +221,7 @@ export default function DiamondLocal() {
         })
     );
     const handleRange = (values, name) => {
+        setPending(true);
         const data = {
             ...range,
             [name]: values
@@ -218,6 +230,7 @@ export default function DiamondLocal() {
         stateDebounceCallHttpRequest(data);
     };
     const onRowClicked = (row, event) => {
+        console.log("click");
         setRight({
            carat: row.carat,
            shape: row.shape,
@@ -225,11 +238,13 @@ export default function DiamondLocal() {
            clarity: row.clarity,
            sku:row.sku,
            report: row.report,
+           link: href+'/product/'+row.sku,
        });
-   };
-   const onRowHover = (row, event) => {
-       console.log("hover");
-   };
+    };
+    const onSelectedRowChange = (rows, event) => {
+        setCount1(rows['selectedCount']);
+        setCompareTable(rows['selectedRows']);
+    };
     const [tableData, setTableData] = useState(
         [
             {
@@ -239,7 +254,22 @@ export default function DiamondLocal() {
                 color: '',
                 clarity: '',
                 report: '',
-                price: '',
+                price: '',  
+                trId: '',
+            },
+        ]
+    )
+    
+    const [compareData, setCompareTable] = useState(
+        [
+            {
+                sku: '',
+                shape: '',
+                carat: '',
+                color: '',
+                clarity: '',
+                report: '',
+                price: '',  
                 trId: '',
             },
         ]
@@ -274,7 +304,7 @@ export default function DiamondLocal() {
               //  meas_width_to: range.length[1],
             }
         };
-        const url = HOME_URL+'api/backend/rapnet-api';
+        const url = HOME_URL+'backend/get-diamonds';
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json','Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'*'},
@@ -296,21 +326,28 @@ export default function DiamondLocal() {
                             color: e.color,
                             clarity: e.clarity,
                             report: e.report,
-                            price: option_text,
+                            price: e.price,
                             trId: 'RC'+i,
                         }   
                 })
+            setCount(i);
             setTableData(rows);
+            setPending(false);
+           
         } catch (err) {
             console.log('error: ', err);
         }
     
     };
-    const [loadMore, setLoadMore] = React.useState(false);
+    const [pending, setPending] = useState(true);
+    const [count, setCount] = useState(false);
+    const [count1, setCount1] = useState(false);
+    const [loadMore, setLoadMore] = useState(false);
     useEffect(()=>{ 
         AfterSubmit(range);
     }, []) 
     return (
+       
         <div className='serch-outer diamond-search'>
             <div className='cust-container'>
                 <div className="search-header">
@@ -502,17 +539,19 @@ export default function DiamondLocal() {
                     <Tabs>
                         <TabList>
                             <Tab>
-                                Results <span>(4)</span>
+                                Results <span>({count})</span>
                             </Tab>
                             <Tab>
-                                Comparison <span>(0)</span>
+                                Comparison <span>({count1})</span>
                             </Tab>
                         </TabList>
 
                         <TabPanel>
                             <div className='table-info-outer'>
                                 <div className="cust-data-table">
-                                    <DataTable columns={columns} data={tableData} selectableRows  pagination highlightOnHover overflowY overflowX onRowClicked={onRowClicked} onRowHovered={onRowHover} />
+                                    <DataTable columns={columns} data={tableData} selectableRows  pagination highlightOnHover overflowY overflowX 
+                                    onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange}
+                                    progressPending={pending} progressComponent={<Loader type="TailSpin" color="#000"/>}  />
                                 </div>
                                 <div className='table-info'>
                                     <div className='table-info-inner'>
@@ -526,9 +565,8 @@ export default function DiamondLocal() {
                                             <li key={'li6'} ><b>Report:</b> {right.report}</li>
                                         </ul>
                                         <div className='btn-outer'>
-                                            <a href="#" className='cust-btn'> Add to cart</a>
                                             <a href="#" className='cust-btn'> Inquire Now</a>
-                                            <a href="#"> View more details</a>
+                                            <a href={right.link} target='_blank'> View more details</a>
                                         </div>
                                     </div>
                                 </div>
@@ -536,7 +574,9 @@ export default function DiamondLocal() {
                         </TabPanel>
                         <TabPanel>
                             <div className='table-info-outer'>
-                            <DataTable columns={columns} selectableRows  pagination />
+                            <div className="cust-data-table">
+                                <DataTable columns={columns} data={compareData} selectableRows  pagination highlightOnHover overflowY overflowX onRowClicked={onRowClicked} />
+                            </div>   
                                 <div className='table-info'>
                                     <div className='table-info-inner'>
                                         <h4>Diamond Information</h4>
@@ -549,7 +589,6 @@ export default function DiamondLocal() {
                                             <li key={'li6'} ><b>Report:</b> </li>
                                         </ul>
                                         <div className='btn-outer'>
-                                            <a href="#" className='cust-btn'> Add to cart</a>
                                             <a href="#" className='cust-btn'> Inquire Now</a>
                                             <a href="#"> View more details</a>
                                         </div>

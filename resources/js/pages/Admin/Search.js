@@ -5,7 +5,6 @@ import Slider, { SliderTooltip  } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import '../../../sass/custom.css';
 import * as ReactIcon from 'react-icons/fa';
-import '../../../sass/preview.css';
 import StaticTable from './Table';
 import DiamondHeader from '../Frontend/DiamondHeader';
 

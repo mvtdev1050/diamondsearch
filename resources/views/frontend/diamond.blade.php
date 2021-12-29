@@ -10,6 +10,8 @@
     </script>
   </head>
   <body>
+  {% if customer %}
+  {% endif %}
  <script>
         window.home_url="{{env('HOME_URL')}}";
         window.api_key="{{env('SHOPIFY_API_KEY')}}";
