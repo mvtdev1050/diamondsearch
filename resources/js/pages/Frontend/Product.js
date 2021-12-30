@@ -4,6 +4,10 @@ import 'rc-tooltip/assets/bootstrap.css';
 import 'react-tabs/style/react-tabs.css';
 import 'rc-slider/assets/index.css';
 const HOME_URL =window.home_url;
+import {ToastContainer} from 'react-toastify';
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+var origin   = window.location.origin; 
 export default function ProductCart() {
     const AddCart = async (diamond_id) => {
         var req = {
@@ -18,7 +22,6 @@ export default function ProductCart() {
         try {
             const response = await fetch(url, requestOptions) 
             var product_id=await response.json();
-            console.log("--"+product_id);
                 let formData = {
                 'items': [{
                  'id': product_id,
@@ -33,7 +36,10 @@ export default function ProductCart() {
                     body: JSON.stringify(formData)
                 })
                 .then(r => {
-                    console.log(formData+"Success:"+r);
+                    toast.success("Product added to cart");
+                    setTimeout(function(){
+                    window.location.href = origin+'/cart';
+                    },300);
                 })
                 .catch((error) => {
                     console.error('Error:', error);
@@ -44,7 +50,10 @@ export default function ProductCart() {
         }
     }
     return (
+        <div>
         <a className="add-to-bag " onClick={() => AddCart(diamond_id)} >Add To Shopping Bag</a>
+        <ToastContainer />
+        </div>
     );
 }
 if (document.getElementById('add-to-cart')) {

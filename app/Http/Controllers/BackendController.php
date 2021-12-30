@@ -14,7 +14,7 @@ class BackendController extends Controller
 {
     public function __construct()
     {
-        $this->url=env('HOME_URL');
+        $this->home_url=env('HOME_URL');
         if(empty(Session::get('storename'))){Session::put('storename', 'moyenandco.myshopify.com');}
         if(empty(Session::get('store_id'))){Session::put('store_id', '1');}  
     }
@@ -69,12 +69,11 @@ class BackendController extends Controller
 
     public function getDiamonds(Request $request)
     { 
-
         $request_json = [];
-        $request_json['request']['header']['username'] = 'f4ickp8pctfwszxcd9mff8hmhb7ixv'; //Essential
-        $request_json['request']['header']['password'] = 's7wwA8yg'; //Essential
-        $request_json["request"]["body"]["page_number"] = 1; //Essential
-        $request_json["request"]["body"]["page_size"] = 20; //Essential
+        $request_json['request']['header']['username'] = 'f4ickp8pctfwszxcd9mff8hmhb7ixv'; 
+        $request_json['request']['header']['password'] = 's7wwA8yg'; 
+        $request_json["request"]["body"]["page_number"] = 1; 
+        $request_json["request"]["body"]["page_size"] = 50;
             if(!empty($request->range)){         
                 foreach ($request->range as $key => $value){
                     if($key=="shapes"){
@@ -125,24 +124,53 @@ class BackendController extends Controller
     public function addCart(Request $request)
     {
         $response='';
+        $base='';
         $diamond = $this->singleDiamond($request->diamond_id);
-         if(!empty($diamond)){
+        if(!empty($diamond)){
             $data=array();
-            $data['product']['title']=$diamond['size'].' Carat, '.$diamond['color'].' Color, '.$diamond['clarity'].' Clarity, '.$diamond['shape'].' Shaped Diamond';
+            // switch($diamond['shape']){
+            //     case "Round":
+            //       $shape_img='round.jpg';
+            //       break;
+            //     case "Oval":
+            //       $shape_img='oval.jpg';
+            //       break;
+            //     case "Cushion Modified":
+            //       $shape_img='cushion.jpg';
+            //       break;
+            //     case "Princess":
+            //       $shape_img='princess.jpg';
+            //       break;
+            //     case "Emerald":
+            //       $shape_img='emerald.jpg';
+            //       break;
+            //     case "Pear":
+            //       $shape_img='pear.jpg';
+            //       break;
+            //     case "Marquise":
+            //       $shape_img='marquise.jpg';
+            //       break;
+            //     case "Asscher":
+            //       $shape_img='asscher.jpg';
+            //       break;
+            //     case "Radiant":
+            //       $shape_img='radiant.jpg';
+            //       break;
+            //     case "Heart":
+            //       $shape_img='heart.jpg';
+            //       break;
+            //     default:
+            //       $shape_img='round.jpg';
+            // }
+            // echo $base=base64_encode(file_get_contents($this->home_url.'img/'.$shape_img));
+            $data['product']['title']=$diamond['size'].' Carats, '.$diamond['color'].' Color, '.$diamond['clarity'].' Clarity, '.$diamond['shape'].' Shaped Diamond';
             $data['product']['handle']=$diamond['diamond_id'].'-diamond';
-            $data['product']['body_html']='Carat weight : '.$diamond['size'].', Shape:'. $diamond['shape'].', Color: '.$diamond['color'].', Clarity: '.$diamond['clarity'].', Price: '.$diamond['total_sales_price'].', Symmetry : '.$diamond['symmetry'].', Polish : '.$diamond['polish'].', Cut : '.$diamond['cut'].', Stock Number : '.$diamond['stock_num'].', Report : '.$diamond['cert_num'].', Length : '.$diamond['meas_length']. ', Width : '.$diamond['meas_width'].', Depth : '.$diamond['meas_depth']. ', Table Percent:'.$diamond['table_percent'].', Depth Percent: '.$diamond['depth_percent'].', Lab :'.$diamond['lab'];
-            $data['product']['product_type']="Diamond";
-            $data['product']['published']=false;
-            $data['product']['sku']=$diamond['stock_num'];
-            $data['product']['price']=$diamond['total_sales_price'];
-            // $data['product']['options'][0]['name']='Carat';
-            // $data['product']['options'][0]['value']=$diamond['size'];
-            // $data['product']['options'][1]['name']='Color';
-            // $data['product']['options'][1]['value']=$diamond['color'];
-            // $data['product']['options'][2]['name']='Shape';
-            // $data['product']['options'][2]['value']=$diamond['shape'];
-            // $data['product']['options'][3]['name']='Clarity';
-            // $data['product']['options'][3]['value']=$diamond['clarity'];
+            $data['product']['body_html']='Carat weight: '.$diamond['size'].', Shape: '. $diamond['shape'].', Color: '.$diamond['color'].', Clarity: '.$diamond['clarity'].', Price: '.$diamond['total_sales_price'].', Symmetry: '.$diamond['symmetry'].', Polish: '.$diamond['polish'].', Cut: '.$diamond['cut'].', Stock Number: '.$diamond['stock_num'].', Report: '.$diamond['cert_num'].', Length: '.$diamond['meas_length']. ', Width: '.$diamond['meas_width'].', Depth: '.$diamond['meas_depth']. ', Table Percent: '.$diamond['table_percent'].', Depth Percent: '.$diamond['depth_percent'].', Lab: '.$diamond['lab'];
+            $data['product']['product_type']="Diamond";            
+            $data['product']['variants'][0]['option1']='Carat weight: '.$diamond['size'].', Shape: '. $diamond['shape'].', Color: '.$diamond['color'].', Clarity: '.$diamond['clarity'].', Length: '.$diamond['meas_length']. ', Width: '.$diamond['meas_width'].', Depth: '.$diamond['meas_depth']. ', Table Percent:'.$diamond['table_percent'].', Depth Percent: '.$diamond['depth_percent'].', Lab:'.$diamond['lab'].', Symmetry: '.$diamond['symmetry'].', Polish: '.$diamond['polish'].', Cut: '.$diamond['cut'];
+            $data['product']['variants'][0]['price']=$diamond['total_sales_price'];
+            $data['product']['variants'][0]['sku']=$diamond['stock_num'];  
+            $data['product']['variants'][0]['inventory_quantity']=10;       
             $create_url = "https://" . Session::get('storename') . "/admin/api/2021-10/products.json";
             $r = Store::select('access_token')->where(['store_name' => Session::get('storename')])->where(['status'=> '1'])->first();
             if(!empty($r['access_token'])){
@@ -155,16 +183,25 @@ class BackendController extends Controller
                 $search = $this->hitApi('GET', $search_url, $header,'');
                 if(empty($search->products)){
                     $resp = $this->hitApi('POST', $create_url, $header,json_encode($data));
-                    if(!empty($resp->product->id)){
-                        $product_id=$resp->product->id;
+                    // if(!empty($resp->product->id)){
+                    //     $product_id=$resp->product->id;
+                    //     $image['image']['src']=$this->home_url.'img/'.$shape_img;
+                    //     $img_url = "https://" . Session::get('storename') . "/admin/api/2021-10/products/".$product_id."/images.json";
+                    //     $img_res = $this->hitApi('POST', $img_url, $header,json_encode($image));
+                    //     print_r($img_res);
+                    // }
+                    if(!empty($resp->product->variants[0]->id)){
+                        $variant_id=$resp->product->variants[0]->id;
                     }  
                 }
                 else{
-                    print_r($search);
-                    if(!empty($search->products[0]->id)){$product_id=$search->products[0]->id;}
+                    $id=$search->products[0]->id;
+                    $update_url = "https://" . Session::get('storename') . "/admin/api/2021-10/products/".$id.".json";
+                    $resp = $this->hitApi('PUT', $update_url, $header,json_encode($data));
+                    if(!empty($search->products[0]->variants[0]->id)){$variant_id=$search->products[0]->variants[0]->id;}
                 }
-                if(!empty($product_id)){
-                    $response=$product_id;
+                if(!empty($variant_id)){
+                    $response=$variant_id;
                 }
             }
         }

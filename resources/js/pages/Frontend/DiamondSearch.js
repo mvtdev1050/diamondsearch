@@ -17,6 +17,8 @@ if(option=='view'){var option_text='View Product';}else if(option=='call'){var o
 const HOME_URL =window.home_url;
 const origin   = window.location.origin; 
 const href   = window.location.href; 
+const login_check= window.login;
+const login_link   = origin+'/account/login'; 
 const shapes = [
     {
         name: 'Round',
@@ -119,10 +121,6 @@ const grade = {
     75: 'VERY GOOD',
     100: 'EXCELLENT',
 };
-const clickHandler = (row, event) => {  
-    var origin   = window.location.origin; 
-    window.open(origin+'/account/login');
-};
 const columns = [
        
     {
@@ -178,11 +176,8 @@ const columns = [
         dataIndex: 'price',
         key: 'price',
         name: 'Price',
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
-        cell:(row) => <a href="#" onClick={clickHandler} id={row.ID}>{option_text}</a>,
-
+        selector: row => row.price,
+        sortable: true,
     },
 ];
 const { createSliderWithTooltip } = Slider;
@@ -219,6 +214,14 @@ export default function DiamondSearch() {
        
     });
     const callHttpRequest = (ranges) => {
+        setTimeout(function(){
+            var tableCell=document.getElementsByClassName('rdt_TableCell');  
+            for (i = 0; i < tableCell.length; i++) {
+                tableCell[i].addEventListener("mouseover", function(e) {
+                this.click();
+                })
+            }
+        },8000);
         AfterSubmit(ranges)
     };
     const [stateDebounceCallHttpRequest] = useState(() =>
@@ -334,6 +337,7 @@ export default function DiamondSearch() {
             var i =0;
             arr.forEach(e => 
                 {
+                    var price=e.currency_symbol+''+e.total_sales_price;
                     if(i==0){
                         setRight({
                             carat: e.size,
@@ -365,7 +369,7 @@ export default function DiamondSearch() {
                             color: e.color,
                             clarity: e.clarity,
                             report: e.cert_num,
-                            price: e.price,
+                            price: price,
                             diamond_id: e.diamond_id,
                             symmetry: e.symmetry,
                             cut: e.cut,
@@ -376,6 +380,10 @@ export default function DiamondSearch() {
                             m_length: e.meas_length,
                             m_width: e.meas_width,
                             m_depth: e.meas_depth,
+                        }
+                        if(login_check=='0'){
+                            var link='<a href={login_link} >{option_text}</a>';   
+                            rows[i]['price']='Login For Price';   
                         }   
                 })
             setCount(i);
@@ -384,13 +392,21 @@ export default function DiamondSearch() {
         } catch (err) {
             console.log('error: ', err);
         }
-    
     };
     const [pending, setPending] = useState(true);
     const [count, setCount] = useState(0);
     const [count1, setCount1] = useState(0);
     const [loadMore, setLoadMore] = useState(false);
     useEffect(()=>{ 
+        setTimeout(function(){
+            var tableCell=document.getElementsByClassName('rdt_TableCell');  
+            for (i = 0; i < tableCell.length; i++) {
+                tableCell[i].addEventListener("mouseover", function(e) {
+                this.click();
+                })
+            }
+        },12000);
+
         AfterSubmit(range);
     }, []) 
     return (

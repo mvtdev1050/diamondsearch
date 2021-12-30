@@ -11,6 +11,9 @@
   </head>
   <body>
   {% if customer %}
+  <script> window.login="1";</script>
+  {% else %}
+  <script>window.login="0";</script>
   {% endif %}
  <script>
         window.home_url="{{env('HOME_URL')}}";

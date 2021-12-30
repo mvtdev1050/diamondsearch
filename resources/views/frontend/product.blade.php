@@ -12,7 +12,7 @@
   </head>
 
   <body>
-    <div class='serch-outer diamond-product'>
+    <div class='serch-outer diamond-product' id='searchProduct'>
           <div class='cust-container'>
             <div class="product-wrap">
               <div class="product-info">
@@ -61,12 +61,11 @@
                       <p class="short-info">{{$product['size'],''}} Carat, {{$product['color'],''}} Color, {{$product['clarity'],''}} Clarity, {{$product['shape'],''}} Shaped Diamond</p>
                       <br/>
                         {% if customer %}
-                          <div class='diamond-price'></div>
-                          <div class="diamond-actions" id='add-to-cart'>
-                           
-                          </div>
+                          <div class='diamond-price'><p><strong>Price:</strong> {{$product['currency_symbol'],''}}{{$product['total_sales_price'],''}}  <small>(Diamond Only)</small></p></div>
+                          <br/>
+                          <div class="diamond-actions" id='add-to-cart'></div>
                         {% endif %}
-                      <hr>
+                      <hr/>
                       <div class="diamond-details">
                           <h4 class="iconic">Diamond Details</h4>
                           <div class="product-left">
