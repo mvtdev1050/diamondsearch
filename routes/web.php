@@ -19,7 +19,6 @@ Route::view('/', 'welcome');
 
 Route::get('/auth', 'AppController@auth');
 Route::get('/callback', 'AppController@callback');
-
 Route::post('/backend/admin-product', 'BackendController@adminProduct');
 Route::post('/backend/save-setting', 'BackendController@saveSetting');
 
@@ -32,7 +31,7 @@ Route::post('/webhook/app/uninstall', 'AppController@appUninstalled');
 
 Route::middleware(['cors'])->group(function () {
     Route::any('/backend/get-diamonds', 'BackendController@getDiamonds');
-    Route::any('/backend/single-diamond', 'BackendController@singleDiamond');
+    Route::any('/backend/add-cart', 'BackendController@addCart');
 });
 
 

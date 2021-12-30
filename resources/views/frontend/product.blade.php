@@ -56,14 +56,14 @@
                     <img src="{{env('HOME_URL')}}img/{{$shape_img,''}}">
                 </div>
                 <div class="product-desc">
-                      <h4 class="product-title">{{$product['size'],''}}ct, {{$product['color'],''}} Color, {{$product['shape'],''}} Diamond</h4>
+                      <h4 class="product-title">{{$product['size'],''}} Carat, {{$product['color'],''}} Color, {{$product['shape'],''}} Shaped Diamond</h4>
                       <br/>
                       <p class="short-info">{{$product['size'],''}} Carat, {{$product['color'],''}} Color, {{$product['clarity'],''}} Clarity, {{$product['shape'],''}} Shaped Diamond</p>
                       <br/>
                         {% if customer %}
                           <div class='diamond-price'></div>
-                          <div class="diamond-actions">
-                            <a class="add-to-bag " href="">Add To Shopping Bag</a>
+                          <div class="diamond-actions" id='add-to-cart'>
+                           
                           </div>
                         {% endif %}
                       <hr>
@@ -98,7 +98,11 @@
             </div>
           </div>
       </div>
-    <div id="searchProduct"></div>
+      <script>
+        window.home_url="{{env('HOME_URL')}}";
+        window.diamond_id="{{$product['diamond_id'],''}}";;
+    </script>
+    <div id="searchProduct"></div> 
     <script src="{{env('HOME_URL')}}js/app.js"> </script>
   </body>
 </html>

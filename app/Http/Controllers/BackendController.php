@@ -101,13 +101,13 @@ class BackendController extends Controller
         }
         return $arr;
     }
-    public function singleDiamond(Request $request)
+    public function singleDiamond($diamond_id)
     { 
 
         $request_json = [];
         $request_json['request']['header']['username'] = 'f4ickp8pctfwszxcd9mff8hmhb7ixv'; 
         $request_json['request']['header']['password'] = 's7wwA8yg'; 
-        $request_json["request"]["body"]["diamond_id"] = $request->diamond_id; 
+        $request_json["request"]["body"]["diamond_id"] = $diamond_id; 
         $request_json = json_encode($request_json);
         $ch = curl_init('https://technet.rapaport.com/HTTP/JSON/RetailFeed/GetSingleDiamond.aspx');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -121,5 +121,53 @@ class BackendController extends Controller
             $arr=$response['response']['body']['diamond'];
         }
         return $arr;
+    }
+    public function addCart(Request $request)
+    {
+        $response='';
+        $diamond = $this->singleDiamond($request->diamond_id);
+         if(!empty($diamond)){
+            $data=array();
+            $data['product']['title']=$diamond['size'].' Carat, '.$diamond['color'].' Color, '.$diamond['clarity'].' Clarity, '.$diamond['shape'].' Shaped Diamond';
+            $data['product']['handle']=$diamond['diamond_id'].'-diamond';
+            $data['product']['body_html']='Carat weight : '.$diamond['size'].', Shape:'. $diamond['shape'].', Color: '.$diamond['color'].', Clarity: '.$diamond['clarity'].', Price: '.$diamond['total_sales_price'].', Symmetry : '.$diamond['symmetry'].', Polish : '.$diamond['polish'].', Cut : '.$diamond['cut'].', Stock Number : '.$diamond['stock_num'].', Report : '.$diamond['cert_num'].', Length : '.$diamond['meas_length']. ', Width : '.$diamond['meas_width'].', Depth : '.$diamond['meas_depth']. ', Table Percent:'.$diamond['table_percent'].', Depth Percent: '.$diamond['depth_percent'].', Lab :'.$diamond['lab'];
+            $data['product']['product_type']="Diamond";
+            $data['product']['published']=false;
+            $data['product']['sku']=$diamond['stock_num'];
+            $data['product']['price']=$diamond['total_sales_price'];
+            // $data['product']['options'][0]['name']='Carat';
+            // $data['product']['options'][0]['value']=$diamond['size'];
+            // $data['product']['options'][1]['name']='Color';
+            // $data['product']['options'][1]['value']=$diamond['color'];
+            // $data['product']['options'][2]['name']='Shape';
+            // $data['product']['options'][2]['value']=$diamond['shape'];
+            // $data['product']['options'][3]['name']='Clarity';
+            // $data['product']['options'][3]['value']=$diamond['clarity'];
+            $create_url = "https://" . Session::get('storename') . "/admin/api/2021-10/products.json";
+            $r = Store::select('access_token')->where(['store_name' => Session::get('storename')])->where(['status'=> '1'])->first();
+            if(!empty($r['access_token'])){
+                $header = array(
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'X-Shopify-Access-Token' => $r['access_token']
+                );
+                $search_url = "https://" . Session::get('storename') . "/admin/api/2021-10/products.json?handle=".$data['product']['handle'];
+                $search = $this->hitApi('GET', $search_url, $header,'');
+                if(empty($search->products)){
+                    $resp = $this->hitApi('POST', $create_url, $header,json_encode($data));
+                    if(!empty($resp->product->id)){
+                        $product_id=$resp->product->id;
+                    }  
+                }
+                else{
+                    print_r($search);
+                    if(!empty($search->products[0]->id)){$product_id=$search->products[0]->id;}
+                }
+                if(!empty($product_id)){
+                    $response=$product_id;
+                }
+            }
+        }
+        return $response;
     }
 }
