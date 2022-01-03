@@ -10,7 +10,8 @@ import * as ReactIcon from 'react-icons/fa';
 import debounce from 'lodash/debounce';
 import DataTable from 'react-data-table-component';
 import Loader from "react-loader-spinner";
-import { nodeName } from 'jquery';
+import Modal from 'react-modal';
+
 
 if (window.option){var option=window.option;} else{var option='Login';}
 if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
@@ -19,6 +20,19 @@ const origin   = window.location.origin;
 const href   = window.location.href; 
 const login_check= window.login;
 const login_link   = origin+'/account/login'; 
+const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+    },
+    overlay: {
+        backgroundColor: 'rgba(34, 34, 34, 0.5)'
+      },
+  };
 const shapes = [
     {
         name: 'Round',
@@ -182,6 +196,7 @@ const columns = [
 ];
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
+
 export default function DiamondSearch() {
     const [range, setRange] = useState({
         carat: [0.02, 11.07],
@@ -213,7 +228,7 @@ export default function DiamondSearch() {
         link:href+'/product/'
        
     });
-    const callHttpRequest = (ranges) => {
+    const hoverChange = (time) =>{      
         setTimeout(function(){
             var tableCell=document.getElementsByClassName('rdt_TableCell');  
             for (i = 0; i < tableCell.length; i++) {
@@ -221,7 +236,10 @@ export default function DiamondSearch() {
                 this.click();
                 })
             }
-        },8000);
+        },time);
+    }
+    const callHttpRequest = (ranges) => {
+        hoverChange(8000);
         AfterSubmit(ranges)
     };
     const [stateDebounceCallHttpRequest] = useState(() =>
@@ -263,6 +281,7 @@ export default function DiamondSearch() {
     const onSelectedRowChange = (rows, event) => {
         setCount1(rows['selectedCount']);
         setCompareTable(rows['selectedRows']);
+        hoverChange(2000);
     };
     const [tableData, setTableData] = useState(
         [
@@ -294,6 +313,20 @@ export default function DiamondSearch() {
             },
         ]
     )
+    const [pending, setPending] = useState(true);
+    const [count, setCount] = useState(0);
+    const [count1, setCount1] = useState(0);
+    const [loadMore, setLoadMore] = useState(false);
+    const [modalIsOpen, setIsOpen] = React.useState(false);
+    const openModal= () => {
+        setIsOpen(true);
+    }
+    const closeModal= () => {
+        setIsOpen(false);
+    }
+    const  handleSubmit= () => {
+       console.log("submit");
+    }
     const AfterSubmit = async (range) => {
         var req = {
             range:{
@@ -393,20 +426,8 @@ export default function DiamondSearch() {
             console.log('error: ', err);
         }
     };
-    const [pending, setPending] = useState(true);
-    const [count, setCount] = useState(0);
-    const [count1, setCount1] = useState(0);
-    const [loadMore, setLoadMore] = useState(false);
     useEffect(()=>{ 
-        setTimeout(function(){
-            var tableCell=document.getElementsByClassName('rdt_TableCell');  
-            for (i = 0; i < tableCell.length; i++) {
-                tableCell[i].addEventListener("mouseover", function(e) {
-                this.click();
-                })
-            }
-        },12000);
-
+        hoverChange(12000);
         AfterSubmit(range);
     }, []) 
     return (
@@ -645,7 +666,7 @@ export default function DiamondSearch() {
                                             </div>
                                         </div>
                                         <div className='btn-outer'>
-                                            <a href="#" className='cust-btn'> Inquire Now</a>
+                                            <button className='cust-btn' onClick={openModal} >Inquire Now</button>
                                             <a href={right.link} target='_blank'> View more details</a>
                                         </div>
                                     </div>
@@ -657,7 +678,7 @@ export default function DiamondSearch() {
                             <div className="cust-data-table">
                                 <DataTable columns={columns} data={compareData} selectableRows  pagination highlightOnHover overflowY overflowX 
                                 onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange} 
-                                progressPending={pending} progressComponent={<Loader type="TailSpin" color="#000"/>}/>
+                                progressPending={pending} progressComponent={<Loader type="TailSpin" color="#000" className="cust-loader"/>}/>
                             </div>
                                 <div className='table-info'>
                                     <div className='table-info-inner'>
@@ -695,6 +716,79 @@ export default function DiamondSearch() {
                         </TabPanel>
                     </Tabs>
                 </div>
+                <Modal isOpen={modalIsOpen} onRequestClose={closeModal}  style={customStyles} ariaHideApp={false}>
+                    <div className="model-outer">
+                        <h4 className="model-title">Diamond Inquiry</h4>
+                        <div className="model-info">
+                            <div className="model-image">
+                                <img src={HOME_URL+'img/round.jpg'} />
+                            </div> 
+                            <div className="model-table">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Carat Weight</strong>: {right.carat}</td>
+                                                <td><strong>Measurements</strong>:  {right.m_length} x {right.m_width} x {right.m_depth}</td> 
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Shape</strong>:  {right.shape}</td>
+                                                <td><strong>Depth</strong>: {right.depth}%</td>
+                                            </tr> 
+                                            <tr>
+                                                <td><strong>Color</strong>: {right.color} </td>
+                                                <td><strong>Table</strong>: {right.table}%</td>
+                                            </tr> 
+                                            <tr>
+                                                <td><strong>Clarity</strong>: {right.clarity} </td>
+                                                <td><strong>Cut</strong>: {right.cut} </td> 
+                                               
+                                            </tr> 
+                                            <tr>
+                                                <td><strong>Stock Number</strong>: {right.sku}</td>
+                                                <td><strong>Symmetry</strong>: {right.symmetry}</td> 
+                                            </tr> 
+                                            <tr>
+                                                <td><strong>Report</strong>: {right.report}</td>                                   
+                                                <td><strong>Polish</strong>: {right.polish} </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Lab</strong>: {right.lab} </td>                                           
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                        </div> 
+                        <div className="clearfix"></div>
+                        <div className="model-form">
+                            <form method="POST">
+                                    <div className='row'>
+                                        <div className='col-6'>
+                                            <input type="text" name="firstname" placeholder="First Name" required='' />
+                                        </div>
+                                        <div className='col-6'>
+                                            <input type="text" name="lastname" placeholder="Last Name" required=''/>
+                                        </div>
+                                    </div>
+                                    <div className='row'>
+                                        <div className='col-6'>
+                                            <input type="email" name="email" placeholder="Email" required=''/>
+                                        </div>
+                                        <div className='col-6'>
+                                            <input type="tel" name="phone" placeholder="Phone" required=''/>
+                                        </div>
+                                    </div>
+                                    <div className='row'>
+                                        <div className='col-12'>
+                                            <textarea name="inquiry" placeholder="Inquiry" required=''></textarea>
+                                        </div>
+                                    </div>
+                                    <div className='row btn-outer'>
+                                        <button className="cust-btn submit-form">Submit</button>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </Modal>
             </div>
         </div>
     );

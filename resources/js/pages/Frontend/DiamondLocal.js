@@ -10,12 +10,29 @@ import * as ReactIcon from 'react-icons/fa';
 import debounce from 'lodash/debounce';
 import DataTable from 'react-data-table-component';
 import Loader from "react-loader-spinner";
+import Modal from 'react-modal';
+
 
 if (window.option){var option=window.option;} else{var option='Login';}
 if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
 const HOME_URL =window.home_url;
 const origin   = window.location.origin; 
 const href   = window.location.href; 
+const login_check= window.login;
+const login_link   = origin+'/account/login'; 
+const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+    },
+    overlay: {
+        backgroundColor: 'rgba(34, 34, 34, 0.5)'
+      },
+  };
 const shapes = [
     {
         name: 'Round',
@@ -33,10 +50,6 @@ const shapes = [
         name: 'Princess',
         image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-pricess.svg?v=16220410196671539921',
     },
-    // {
-    //     name: 'Emerald',
-    //     image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-emarald.svg?v=16220410196671539921',
-    // },
     {
         name: 'Pear',
         image: '//cdn.shopify.com/s/files/1/0588/7852/5589/t/1/assets/diamond-pear.svg?v=3686681557302028351',
@@ -122,10 +135,6 @@ const grade = {
     75: 'VERY GOOD',
     100: 'EXCELLENT',
 };
-const clickHandler = (row, event) => {  
-    var origin   = window.location.origin; 
-    window.open(origin+'/account/login');
-};
 const columns = [
        
     {
@@ -181,14 +190,13 @@ const columns = [
         dataIndex: 'price',
         key: 'price',
         name: 'Price',
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
-        cell:(row) => <a href="#" onClick={clickHandler} id={row.ID}>{option_text}</a>,
+        selector: row => row.price,
+        sortable: true,
     },
 ];
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
+
 export default function DiamondLocal() {
     const [range, setRange] = useState({
         carat: [0.02, 11.07],
@@ -220,7 +228,18 @@ export default function DiamondLocal() {
         link:href+'/product/'
        
     });
+    const hoverChange = (time) =>{      
+        setTimeout(function(){
+            var tableCell=document.getElementsByClassName('rdt_TableCell');  
+            for (i = 0; i < tableCell.length; i++) {
+                tableCell[i].addEventListener("mouseover", function(e) {
+                this.click();
+                })
+            }
+        },time);
+    }
     const callHttpRequest = (ranges) => {
+        hoverChange(8000);
         AfterSubmit(ranges)
     };
     const [stateDebounceCallHttpRequest] = useState(() =>
@@ -262,6 +281,7 @@ export default function DiamondLocal() {
     const onSelectedRowChange = (rows, event) => {
         setCount1(rows['selectedCount']);
         setCompareTable(rows['selectedRows']);
+        hoverChange(2000);
     };
     const [tableData, setTableData] = useState(
         [
@@ -293,6 +313,20 @@ export default function DiamondLocal() {
             },
         ]
     )
+    const [pending, setPending] = useState(true);
+    const [count, setCount] = useState(0);
+    const [count1, setCount1] = useState(0);
+    const [loadMore, setLoadMore] = useState(false);
+    const [modalIsOpen, setIsOpen] = React.useState(false);
+    const openModal= () => {
+        setIsOpen(true);
+    }
+    const closeModal= () => {
+        setIsOpen(false);
+    }
+    const  handleSubmit= () => {
+        console.log("submit");
+     }
     const AfterSubmit = async (range) => {
         var req = {
             range:{
@@ -336,6 +370,7 @@ export default function DiamondLocal() {
             var i =0;
             arr.forEach(e => 
                 {
+                    var price=e.currency_symbol+''+e.total_sales_price;
                     if(i==0){
                         setRight({
                             carat: e.size,
@@ -367,7 +402,7 @@ export default function DiamondLocal() {
                             color: e.color,
                             clarity: e.clarity,
                             report: e.cert_num,
-                            price: e.price,
+                            price: price,
                             diamond_id: e.diamond_id,
                             symmetry: e.symmetry,
                             cut: e.cut,
@@ -378,6 +413,10 @@ export default function DiamondLocal() {
                             m_length: e.meas_length,
                             m_width: e.meas_width,
                             m_depth: e.meas_depth,
+                        }
+                        if(login_check=='0'){
+                            var link='<a href={login_link} >{option_text}</a>';   
+                            rows[i]['price']='Login For Price';   
                         }   
                 })
             setCount(i);
@@ -386,13 +425,9 @@ export default function DiamondLocal() {
         } catch (err) {
             console.log('error: ', err);
         }
-    
     };
-    const [pending, setPending] = useState(true);
-    const [count, setCount] = React.useState(false);
-    const [count1, setCount1] = useState(false);
-    const [loadMore, setLoadMore] = React.useState(false);
     useEffect(()=>{ 
+        hoverChange(12000);
         AfterSubmit(range);
     }, []) 
     return (
@@ -598,7 +633,7 @@ export default function DiamondLocal() {
                             <div className='table-info-outer'>
                                 <div className="cust-data-table">
                                 <DataTable columns={columns} data={tableData} selectableRows  pagination highlightOnHover overflowY overflowX 
-                                    onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange} 
+                                    onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange}
                                     progressPending={pending} progressComponent={<Loader type="TailSpin" color="#000"/>}/>
                                 </div>
                                 <div className='table-info'>
@@ -631,7 +666,7 @@ export default function DiamondLocal() {
                                             </div>
                                         </div>
                                         <div className='btn-outer'>
-                                            <a href="#" className='cust-btn'> Inquire Now</a>
+                                            <button className='cust-btn' onClick={openModal} >Inquire Now</button>
                                             <a href={right.link} target='_blank'> View more details</a>
                                         </div>
                                     </div>
@@ -641,7 +676,9 @@ export default function DiamondLocal() {
                         <TabPanel>
                             <div className='table-info-outer'>
                             <div className="cust-data-table">
-                                <DataTable columns={columns} data={compareData} selectableRows  pagination />
+                                <DataTable columns={columns} data={compareData} selectableRows  pagination highlightOnHover overflowY overflowX 
+                                onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange} 
+                                progressPending={pending} progressComponent={<Loader type="TailSpin" color="#000" className="cust-loader"/>}/>
                             </div>
                                 <div className='table-info'>
                                     <div className='table-info-inner'>
@@ -656,7 +693,6 @@ export default function DiamondLocal() {
                                                     <li key={'li5'} ><b>Lab:</b> {right.lab}</li>
                                                     <li key={'li6'} ><b>Report:</b> {right.report}</li>
                                                     <li key={'li7'} ><b>Stock Number:</b> {right.sku}</li>
-
                                                 </ul>
                                             </div>
                                             <div className="info-right">
@@ -667,8 +703,6 @@ export default function DiamondLocal() {
                                                     <li key={'li11'} ><b>Symmetry:</b> {right.symmetry}</li>
                                                     <li key={'li12'} ><b>Polish:</b> {right.polish}</li>
                                                     <li key={'li13'} ><b>Cut:</b> {right.cut}</li>
-                                                   
-
                                                 </ul>
                                             </div>
                                         </div>
@@ -682,6 +716,79 @@ export default function DiamondLocal() {
                         </TabPanel>
                     </Tabs>
                 </div>
+                <Modal isOpen={modalIsOpen} onRequestClose={closeModal}  style={customStyles} ariaHideApp={false}>
+                    <div className="model-outer">
+                        <h4 className="model-title">Diamond Inquiry</h4>
+                        <div className="model-info">
+                            <div className="model-image">
+                                <img src={HOME_URL+'img/round.jpg'} />
+                            </div> 
+                            <div className="model-table">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Carat Weight</strong>: {right.carat}</td>
+                                                <td><strong>Measurements</strong>:  {right.m_length} x {right.m_width} x {right.m_depth}</td> 
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Shape</strong>:  {right.shape}</td>
+                                                <td><strong>Depth</strong>: {right.depth}%</td>
+                                            </tr> 
+                                            <tr>
+                                                <td><strong>Color</strong>: {right.color} </td>
+                                                <td><strong>Table</strong>: {right.table}%</td>
+                                            </tr> 
+                                            <tr>
+                                                <td><strong>Clarity</strong>: {right.clarity} </td>
+                                                <td><strong>Cut</strong>: {right.cut} </td> 
+                                               
+                                            </tr> 
+                                            <tr>
+                                                <td><strong>Stock Number</strong>: {right.sku}</td>
+                                                <td><strong>Symmetry</strong>: {right.symmetry}</td> 
+                                            </tr> 
+                                            <tr>
+                                                <td><strong>Report</strong>: {right.report}</td>                                   
+                                                <td><strong>Polish</strong>: {right.polish} </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Lab</strong>: {right.lab} </td>                                           
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                        </div> 
+                        <div className="clearfix"></div>
+                        <div className="model-form">
+                            <form method="POST">
+                                    <div className='row'>
+                                        <div className='col-6'>
+                                            <input type="text" name="firstname" placeholder="First Name" required='' />
+                                        </div>
+                                        <div className='col-6'>
+                                            <input type="text" name="lastname" placeholder="Last Name" required=''/>
+                                        </div>
+                                    </div>
+                                    <div className='row'>
+                                        <div className='col-6'>
+                                            <input type="email" name="email" placeholder="Email" required=''/>
+                                        </div>
+                                        <div className='col-6'>
+                                            <input type="tel" name="phone" placeholder="Phone" required=''/>
+                                        </div>
+                                    </div>
+                                    <div className='row'>
+                                        <div className='col-12'>
+                                            <textarea name="inquiry" placeholder="Inquiry" required=''></textarea>
+                                        </div>
+                                    </div>
+                                    <div className='row btn-outer'>
+                                        <button className="cust-btn submit-form">Submit</button>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </Modal>
             </div>
         </div>
     );
