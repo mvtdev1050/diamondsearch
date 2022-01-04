@@ -28,10 +28,10 @@ Route::get('/diamond-search/product/{id}', 'PageController@diamondProduct');
 Route::get('/diamond-local', 'PageController@diamondLocal');
 Route::post('/webhook/app/uninstall', 'AppController@appUninstalled');
 
-
 Route::middleware(['cors'])->group(function () {
     Route::any('/backend/get-diamonds', 'BackendController@getDiamonds');
     Route::any('/backend/add-cart', 'BackendController@addCart');
+    Route::any('/backend/inquiry', 'BackendController@Inquiry');
 });
 
 

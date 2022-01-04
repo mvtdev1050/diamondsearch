@@ -5,10 +5,13 @@ use Illuminate\Http\Request;
 use Unirest\Request as Unirest;
 use App\Models\Setting;
 use App\Models\Store;
+use App\Models\Inquiry;
+use App\Models\Product;
 use Session;
 use Response;
 use Log;
 use Cookie;
+use Mail;
 
 class BackendController extends Controller
 {
@@ -183,28 +186,74 @@ class BackendController extends Controller
                 $search = $this->hitApi('GET', $search_url, $header,'');
                 if(empty($search->products)){
                     $resp = $this->hitApi('POST', $create_url, $header,json_encode($data));
-                    // if(!empty($resp->product->id)){
-                    //     $product_id=$resp->product->id;
+                    if(!empty($resp->product->id)){
+                        $product_id=$resp->product->id;
                     //     $image['image']['src']=$this->home_url.'img/'.$shape_img;
                     //     $img_url = "https://" . Session::get('storename') . "/admin/api/2021-10/products/".$product_id."/images.json";
                     //     $img_res = $this->hitApi('POST', $img_url, $header,json_encode($image));
                     //     print_r($img_res);
-                    // }
+                    }
                     if(!empty($resp->product->variants[0]->id)){
                         $variant_id=$resp->product->variants[0]->id;
                     }  
                 }
                 else{
-                    $id=$search->products[0]->id;
-                    $update_url = "https://" . Session::get('storename') . "/admin/api/2021-10/products/".$id.".json";
-                    $resp = $this->hitApi('PUT', $update_url, $header,json_encode($data));
+                    if(!empty($search->products[0]->id)){
+                        $product_id=$search->products[0]->id;
+                        $update_url = "https://" . Session::get('storename') . "/admin/api/2021-10/products/".$product_id.".json";
+                        $resp = $this->hitApi('PUT', $update_url, $header,json_encode($data));
+                    }
                     if(!empty($search->products[0]->variants[0]->id)){$variant_id=$search->products[0]->variants[0]->id;}
                 }
                 if(!empty($variant_id)){
+                    $log['store_id']=$request->store_id;
+                    $log['diamond_id']= $request->diamond_id;
+                    $log['product_id']=$product_id;
+                    $log['title']=$data['product']['title'];
+                    $log['description']=$data['product']['body_html'];
+                    $set = Product::Create($log);
                     $response=$variant_id;
                 }
             }
         }
         return $response;
+    }
+    public function shop_info()
+    {  
+        $r = Store::select('access_token')->where(['store_name' => Session::get('storename')])->where(['status'=> '1'])->first();
+        $header = array(
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'X-Shopify-Access-Token' => $r['access_token']
+        );
+        $search_url = "https://" . Session::get('storename') . "/admin/api/2021-10/shop.json";
+        $search = $this->hitApi('GET', $search_url, $header,'');
+        return $search;
+    }
+    public function inquiry(Request $request)
+    {      
+        $email='';
+        $set = Inquiry::Create($request->all());
+        $data['firstname']=$request->firstname;
+        $data['lastname']=$request->lastname;
+        $data['email']=$request->email;
+        $data['phone']=$request->phone;
+        $data['inquiry']=$request->inquiry;
+        $data['diamond_id']=$request->diamond_id;
+        $data['diamond_info']='';
+        $diamond = $this->singleDiamond($request->diamond_id);
+        $client_email=$request->email;
+        $info = $this->shop_info();
+        if(!empty($info)){
+            $email=$info->shop->email;
+        }
+        if(!empty($diamond)){
+            $data['diamond_info']='Carat weight: '.$diamond['size'].', Shape: '. $diamond['shape'].', Color: '.$diamond['color'].', Clarity: '.$diamond['clarity'].', Price: '.$diamond['total_sales_price'].', Symmetry: '.$diamond['symmetry'].', Polish: '.$diamond['polish'].', Cut: '.$diamond['cut'].', Stock Number: '.$diamond['stock_num'].', Report: '.$diamond['cert_num'].', Length: '.$diamond['meas_length']. ', Width: '.$diamond['meas_width'].', Depth: '.$diamond['meas_depth']. ', Table Percent: '.$diamond['table_percent'].', Depth Percent: '.$diamond['depth_percent'].', Lab: '.$diamond['lab'];
+        }
+        Mail::send('inquiry', $data, function($message) use ($email,$client_email){
+            $message->to($email)->subject('Diamond Inquiry');
+            $message->to($client_email)->subject('Diamond Inquiry')->from($email);
+        });
+        echo 'success';
     }
 }

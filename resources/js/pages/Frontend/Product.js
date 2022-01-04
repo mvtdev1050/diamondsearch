@@ -7,11 +7,13 @@ const HOME_URL =window.home_url;
 import {ToastContainer} from 'react-toastify';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-var origin   = window.location.origin; 
+const origin   = window.location.origin;
+const STORE_ID=window.store_id; 
 export default function ProductCart() {
     const AddCart = async (diamond_id) => {
         var req = {
-            "diamond_id":diamond_id
+            "diamond_id":diamond_id,
+            "store_id":STORE_ID
         };
         const url = HOME_URL+'backend/add-cart';
         const requestOptions = {

@@ -11,7 +11,9 @@ import debounce from 'lodash/debounce';
 import DataTable from 'react-data-table-component';
 import Loader from "react-loader-spinner";
 import Modal from 'react-modal';
-
+import {ToastContainer} from 'react-toastify';
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 if (window.option){var option=window.option;} else{var option='Login';}
 if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
@@ -19,6 +21,7 @@ const HOME_URL =window.home_url;
 const origin   = window.location.origin; 
 const href   = window.location.href; 
 const login_check= window.login;
+const STORE_ID=window.store_id;
 const login_link   = origin+'/account/login'; 
 const customStyles = {
     content: {
@@ -231,7 +234,7 @@ export default function DiamondSearch() {
     const hoverChange = (time) =>{      
         setTimeout(function(){
             var tableCell=document.getElementsByClassName('rdt_TableCell');  
-            for (i = 0; i < tableCell.length; i++) {
+            for (var i = 0; i < tableCell.length; i++) {
                 tableCell[i].addEventListener("mouseover", function(e) {
                 this.click();
                 })
@@ -259,24 +262,26 @@ export default function DiamondSearch() {
     };
     const onRowClicked = (row, event) => {
         setRight({
-           carat: row.carat,
-           shape: row.shape,
-           color: row.color,
-           clarity: row.clarity,
-           sku:row.sku,
-           report: row.report,
-           diamond_id: row.diamond_id,
-           symmetry: row.symmetry,
-           polish: row.polish,
-           cut: row.cut,
-           lab: row.lab,
-           depth: row.depth,
-           table: row.table,
-           m_length: row.m_length,
-           m_width: row.m_width,
-           m_depth: row.m_depth,
-           link: href+'/product/'+row.diamond_id,
+            diamond_id: row.diamond_id,
+            carat: row.carat,
+            shape: row.shape,
+            color: row.color,
+            clarity: row.clarity,
+            sku:row.sku,
+            report: row.report,
+            diamond_id: row.diamond_id,
+            symmetry: row.symmetry,
+            polish: row.polish,
+            cut: row.cut,
+            lab: row.lab,
+            depth: row.depth,
+            table: row.table,
+            m_length: row.m_length,
+            m_width: row.m_width,
+            m_depth: row.m_depth,
+            link: href+'/product/'+row.diamond_id,
        });
+       setDiamondID(row.diamond_id);
     };
     const onSelectedRowChange = (rows, event) => {
         setCount1(rows['selectedCount']);
@@ -317,7 +322,28 @@ export default function DiamondSearch() {
     const [count, setCount] = useState(0);
     const [count1, setCount1] = useState(0);
     const [loadMore, setLoadMore] = useState(false);
-    const [modalIsOpen, setIsOpen] = React.useState(false);
+    const [modalIsOpen, setIsOpen] = useState();
+    const [firstName, setFirstname] = useState('');
+    const [lastName, setLastname] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [inquiry, setInquiry] = useState('');
+    const [diamondID, setDiamondID] = useState('');
+    const handleFirstname = (event) => {
+        setFirstname(event.target.value);
+    }
+    const handleLastname = (event) => {
+        setLastname(event.target.value);
+    }
+    const handleEmail = (event) => {
+        setEmail(event.target.value);
+    }
+    const handlePhone = (event) => {
+        setPhone(event.target.value);
+    }
+    const handleInquiry = (event) => {
+        setInquiry(event.target.value);
+    }
     const openModal= () => {
         setIsOpen(true);
     }
@@ -325,7 +351,27 @@ export default function DiamondSearch() {
         setIsOpen(false);
     }
     const  handleSubmit= () => {
-       console.log("submit");
+       var data = {
+        store_id:STORE_ID,
+        diamond_id:diamondID,
+        firstname: firstName,
+        lastname: lastName,
+        email: email,
+        phone: phone,
+        inquiry: inquiry,
+    }
+    const url = HOME_URL+'backend/inquiry';
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json','Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'*'},
+        body: JSON.stringify(data),
+    };
+    fetch(url, requestOptions)
+        .then(r => {
+            toast.success("Inquiry Submitted Successfully");
+            closeModal();
+        })
+        .catch(console.log("error"))
     }
     const AfterSubmit = async (range) => {
         var req = {
@@ -391,6 +437,7 @@ export default function DiamondSearch() {
                             m_depth: e.meas_depth,
                             link: href+'/product/'+e.diamond_id,
                         });
+                        setDiamondID(row.diamond_id);
                     }
                     i++;
                     rows[i] =
@@ -672,7 +719,7 @@ export default function DiamondSearch() {
                                     </div>
                                 </div>
                             </div>
-                        </TabPanel>
+                        </TabPanel> 
                         <TabPanel>
                             <div className='table-info-outer'>
                             <div className="cust-data-table">
@@ -719,6 +766,7 @@ export default function DiamondSearch() {
                 <Modal isOpen={modalIsOpen} onRequestClose={closeModal}  style={customStyles} ariaHideApp={false}>
                     <div className="model-outer">
                         <h4 className="model-title">Diamond Inquiry</h4>
+                        <ToastContainer autoClose={8000}  />
                         <div className="model-info">
                             <div className="model-image">
                                 <img src={HOME_URL+'img/round.jpg'} />
@@ -760,32 +808,36 @@ export default function DiamondSearch() {
                         </div> 
                         <div className="clearfix"></div>
                         <div className="model-form">
-                            <form method="POST">
                                     <div className='row'>
                                         <div className='col-6'>
-                                            <input type="text" name="firstname" placeholder="First Name" required='' />
+                                            <input type="text" name="firstname" placeholder="First Name" required='' 
+                                            value={firstName} onChange={handleFirstname}/>
                                         </div>
                                         <div className='col-6'>
-                                            <input type="text" name="lastname" placeholder="Last Name" required=''/>
+                                            <input type="text" name="lastname" placeholder="Last Name" required='' 
+                                            value={lastName} onChange={handleLastname}/>
                                         </div>
                                     </div>
                                     <div className='row'>
                                         <div className='col-6'>
-                                            <input type="email" name="email" placeholder="Email" required=''/>
+                                            <input type="email" name="email" placeholder="Email" required='' 
+                                            value={email} onChange={handleEmail}/>
                                         </div>
                                         <div className='col-6'>
-                                            <input type="tel" name="phone" placeholder="Phone" required=''/>
+                                            <input type="tel" name="phone" placeholder="Phone" required=''
+                                            value={phone} onChange={handlePhone}/>
                                         </div>
                                     </div>
                                     <div className='row'>
                                         <div className='col-12'>
-                                            <textarea name="inquiry" placeholder="Inquiry" required=''></textarea>
+                                            <textarea name="inquiry" placeholder="Inquiry" required='' 
+                                            value={inquiry} onChange={handleInquiry}></textarea>
                                         </div>
                                     </div>
                                     <div className='row btn-outer'>
-                                        <button className="cust-btn submit-form">Submit</button>
+                                        <button className="cust-btn submit-form" onClick={handleSubmit} type="button"
+                                        >Submit</button>
                                     </div>
-                            </form>
                         </div>
                     </div>
                 </Modal>

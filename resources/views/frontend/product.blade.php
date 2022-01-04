@@ -99,7 +99,8 @@
       </div>
       <script>
         window.home_url="{{env('HOME_URL')}}";
-        window.diamond_id="{{$product['diamond_id'],''}}";;
+        window.diamond_id="{{$product['diamond_id'],''}}";
+        window.store_id = "{{Session::get('store_id')}}";
     </script>
     <div id="searchProduct"></div> 
     <script src="{{env('HOME_URL')}}js/app.js"> </script>
