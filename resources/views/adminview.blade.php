@@ -37,16 +37,18 @@
             window.color = "{{$setting['color']}}";
         </script>
     @endif
-    <div class="row">
-        <div class="col-md-8">
+    <!-- <div class="row">
+        <div class="col-md-7">
             <div id="dashboard">
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div id="layout-form">
             </div>
         </div>
-    </div>
+    </div> -->
+    <div id="layout-form">
+            </div>
     <script src="js/app.js"> </script>
 </body>
 

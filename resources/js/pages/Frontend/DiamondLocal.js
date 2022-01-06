@@ -252,6 +252,7 @@ export default function DiamondLocal() {
         })
     );
     const handleRange = (values, name) => {
+        setLoader("cust-loader");
         setPending(true);
         const data = {
             ...range,
@@ -323,6 +324,7 @@ export default function DiamondLocal() {
     const [count1, setCount1] = useState(0);
     const [loadMore, setLoadMore] = useState(false);
     const [modalIsOpen, setIsOpen] = useState();
+    const [showLoader, setLoader] = useState('hidden');
     const [firstName, setFirstname] = useState('');
     const [lastName, setLastname] = useState('');
     const [email, setEmail] = useState('');
@@ -469,11 +471,13 @@ export default function DiamondLocal() {
             setCount(i);
             setTableData(rows);
             setPending(false);
+            setLoader("hidden");
         } catch (err) {
             console.log('error: ', err);
         }
     };
     useEffect(()=>{ 
+        setLoader("cust-loader");
         hoverChange(12000);
         AfterSubmit(range);
     }, []) 
@@ -665,6 +669,7 @@ export default function DiamondLocal() {
                         </div>
                     )}
                 </div>
+                <Loader type="TailSpin" color="#000" className={showLoader}/>
                 <div id="diamondCompareTable" className="diamond-search-tab-view">
                     <Tabs>
                         <TabList>
@@ -680,8 +685,7 @@ export default function DiamondLocal() {
                             <div className='table-info-outer'>
                                 <div className="cust-data-table">
                                 <DataTable columns={columns} data={tableData} selectableRows  pagination highlightOnHover overflowY overflowX 
-                                    onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange}
-                                    progressPending={pending} progressComponent={<Loader type="TailSpin" color="#000"/>}/>
+                                    onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange}/>
                                 </div>
                                 <div className='table-info'>
                                     <div className='table-info-inner'>
@@ -724,8 +728,7 @@ export default function DiamondLocal() {
                             <div className='table-info-outer'>
                             <div className="cust-data-table">
                                 <DataTable columns={columns} data={compareData} selectableRows  pagination highlightOnHover overflowY overflowX 
-                                onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange} 
-                                progressPending={pending} progressComponent={<Loader type="TailSpin" color="#000" className="cust-loader"/>}/>
+                                onRowClicked={onRowClicked}  onSelectedRowsChange={onSelectedRowChange} />
                             </div>
                                 <div className='table-info'>
                                     <div className='table-info-inner'>

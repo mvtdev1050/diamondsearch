@@ -399,7 +399,7 @@ ul.steps-labels {
 }
 
 .diamond-search-tab-view table tr td, .diamond-search-tab-view table tr th {
-    padding: 15px 0px 15px 15px;
+    padding: 10px 0px 10px 10px;
     border: none;
     color: #000;
 }
@@ -430,13 +430,15 @@ ul.steps-labels {
 .table-info{
 background:#fff;
 }
-
+.option-title,.Polaris-Label__Text{
+    font-size:16px;
+}
 .table-info-outer .table-info {
-    width: 40%;
+    width: 30%;
 }
 
 .table-info-outer .rc-table {
-    width: 60%;
+    width: 70%;
 }
 
 .table-info-outer {
@@ -462,6 +464,8 @@ background:#fff;
     padding: 16px 10px;
     text-align: center;
     color: #000;
+    margin-top: 0px;
+    
 }
 .diamond-info{
     display:flex;
@@ -499,7 +503,6 @@ background:#fff;
     font-size: 18px;
 }
 .rc-table-content {
-    height: 300px;
     overflow: auto;
 }
 /* width */
@@ -691,4 +694,15 @@ body.ReactModal__Body--open {
     display: flex;
     justify-content: center;
     z-index: 999;
+}
+.Polaris-Page {
+    margin: 0 ;
+    max-width: 40%;
+    
+}
+.Polaris-Layout {
+    display: block;
+}
+.admin-range {
+    width: 99%;
 }

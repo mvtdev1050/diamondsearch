@@ -9,7 +9,7 @@ if(option=='view'){var option_text='View Product';}else if(option=='call'){var o
 export default function StaticTable() {
     const columns = [
         {
-            title: 'Compare',
+            title: '',
             dataIndex: 'compare',
             key: 'compare',
         },
@@ -54,7 +54,7 @@ export default function StaticTable() {
         {
             compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare" style={{ display: "none" }} /><label htmlFor="compare" className="compare-checkbox"></label></div>,
             sku: 'HG175',
-            shape: 'Pear',
+            shape: 'Round',
             carat: '0.30',
             color: 'G',
             clarity: 'VS1',
@@ -65,7 +65,7 @@ export default function StaticTable() {
         {
             compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare" style={{ display: "none" }} /><label htmlFor="compare" className="compare-checkbox"></label></div>,
             sku: 'HG175',
-            shape: 'Pear',
+            shape: 'Round',
             carat: '0.30',
             color: 'G',
             clarity: 'VS1',
@@ -76,7 +76,7 @@ export default function StaticTable() {
         {
             compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare1" style={{ display: "none" }} /><label htmlFor="compare1" className="compare-checkbox"></label></div>,
             sku: 'HG175',
-            shape: 'Pear',
+            shape: 'Round',
             carat: '0.30',
             color: 'G',
             clarity: 'VS1',
@@ -87,7 +87,7 @@ export default function StaticTable() {
         {
             compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare1" style={{ display: "none" }} /><label htmlFor="compare1" className="compare-checkbox"></label></div>,
             sku: 'HG175',
-            shape: 'Pear',
+            shape: 'Round',
             carat: '0.30',
             color: 'G',
             clarity: 'VS1',
@@ -100,7 +100,7 @@ export default function StaticTable() {
         {
             compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare" style={{ display: "none" }} /><label htmlFor="compare" className="compare-checkbox"></label></div>,
             sku: 'HG175',
-            shape: 'Pear',
+            shape: 'Round',
             carat: '0.30',
             color: 'G',
             clarity: 'VS1',
@@ -111,7 +111,7 @@ export default function StaticTable() {
         {
             compare: <div className="compare-checkbox-wrap"><input type="checkbox" id="compare1" style={{ display: "none" }} /><label htmlFor="compare1" className="compare-checkbox"></label></div>,
             sku: 'HG175',
-            shape: 'Pear',
+            shape: 'Round',
             carat: '0.30',
             color: 'G',
             clarity: 'VS1',
@@ -138,16 +138,8 @@ export default function StaticTable() {
                         <div className='table-info'>
                             <div className='table-info-inner'>
                                 <h4>Diamond Information</h4>
-                                <ul>
-                                    <li key={'li1'} ><b>Carat weight:</b> 0.30</li>
-                                    <li key={'li2'} ><b>Shape:</b> Pear</li>
-                                    <li key={'li3'} ><b>Color:</b> F</li>
-                                    <li key={'li4'} ><b>Clarity:</b> I1</li>
-                                    <li key={'li5'} ><b>Symmetry:</b> VG</li>
-                                    <li key={'li6'} ><b>Polish:</b> VG</li>
-                                </ul>
+                                <div class="diamond-info"><div class="info-left"><ul><li><b>Carat weight:</b> 0.3</li><li><b>Shape:</b> Round</li><li><b>Color:</b> K</li><li><b>Clarity:</b>  SI1</li><li><b>Lab:</b> GIA</li><li><b>Report:</b> 2416589892</li><li><b>Stock Number:</b> 75318</li></ul></div><div class="info-right"><ul><li><b>Measurements:</b> 4.28 x 4.32 x 2.66 </li><li><b>Table:</b> 57</li><li><b>Depth:</b> 61.9</li><li><b>Symmetry:</b> Excellent</li><li><b>Polish:</b> Excellent</li><li><b>Cut:</b> Excellent</li></ul></div></div>
                                 <div className='btn-outer'>
-                                    <a href="#" className='cust-btn'> Add to cart</a>
                                     <a href="#" className='cust-btn'> Inquire Now</a>
                                     <a href="#"> View more details</a>
                                 </div>
@@ -161,16 +153,8 @@ export default function StaticTable() {
                         <div className='table-info'>
                             <div className='table-info-inner'>
                                 <h4>Diamond Information</h4>
-                                <ul>
-                                    <li key={'li1'} ><b>Carat weight:</b> 0.30</li>
-                                    <li key={'li2'} ><b>Shape:</b> Pear</li>
-                                    <li key={'li3'} ><b>Color:</b> F</li>
-                                    <li key={'li4'} ><b>Clarity:</b> I1</li>
-                                    <li key={'li5'} ><b>Symmetry:</b> VG</li>
-                                    <li key={'li6'} ><b>Polish:</b> VG</li>
-                                </ul>
+                                <div class="diamond-info"><div class="info-left"><ul><li><b>Carat weight:</b> 0.3</li><li><b>Shape:</b> Round</li><li><b>Color:</b> K</li><li><b>Clarity:</b>  SI1</li><li><b>Lab:</b> GIA</li><li><b>Report:</b> 2416589892</li><li><b>Stock Number:</b> 75318</li></ul></div><div class="info-right"><ul><li><b>Measurements:</b> 4.28 x 4.32 x 2.66 </li><li><b>Table:</b> 57</li><li><b>Depth:</b> 61.9</li><li><b>Symmetry:</b> Excellent</li><li><b>Polish:</b> Excellent</li><li><b>Cut:</b> Excellent</li></ul></div></div>
                                 <div className='btn-outer'>
-                                    <a href="#" className='cust-btn'> Add to cart</a>
                                     <a href="#" className='cust-btn'> Inquire Now</a>
                                     <a href="#"> View more details</a>
                                 </div>
