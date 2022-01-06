@@ -242,17 +242,19 @@ class BackendController extends Controller
         $data['diamond_id']=$request->diamond_id;
         $data['diamond_info']='';
         $diamond = $this->singleDiamond($request->diamond_id);
-        $client_email=$request->email;
+        $client_mail=$request->email;
         $info = $this->shop_info();
         if(!empty($info)){
-            $email=$info->shop->email;
+            $owner_mail=$info->shop->email;
         }
         if(!empty($diamond)){
             $data['diamond_info']='Carat weight: '.$diamond['size'].', Shape: '. $diamond['shape'].', Color: '.$diamond['color'].', Clarity: '.$diamond['clarity'].', Price: '.$diamond['total_sales_price'].', Symmetry: '.$diamond['symmetry'].', Polish: '.$diamond['polish'].', Cut: '.$diamond['cut'].', Stock Number: '.$diamond['stock_num'].', Report: '.$diamond['cert_num'].', Length: '.$diamond['meas_length']. ', Width: '.$diamond['meas_width'].', Depth: '.$diamond['meas_depth']. ', Table Percent: '.$diamond['table_percent'].', Depth Percent: '.$diamond['depth_percent'].', Lab: '.$diamond['lab'];
         }
-        Mail::send('inquiry', $data, function($message) use ($email,$client_email){
-            $message->to($email)->subject('Diamond Inquiry');
-            $message->to($client_email)->subject('Diamond Inquiry')->from($email);
+        Mail::send('ownermail', $data, function($message) use ($owner_mail){
+            $message->to('baljinderkaur.mvt@gmail.com')->subject('Diamond Inquiry');
+        });
+        Mail::send('clientmail', $data, function($message) use ($client_mail){
+            $message->to($client_mail)->subject('Diamond Inquiry');
         });
         echo 'success';
     }

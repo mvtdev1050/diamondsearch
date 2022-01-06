@@ -437,7 +437,7 @@ export default function DiamondLocal() {
                             m_depth: e.meas_depth,
                             link: href+'/product/'+e.diamond_id,
                         });
-                        setDiamondID(row.diamond_id);
+                        setDiamondID(e.diamond_id);
                     }
                     i++;
                     rows[i] =
