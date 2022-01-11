@@ -30,11 +30,15 @@
     </script>
     @if (!empty($setting)) 
         <script>
-            document.body.style.setProperty('--colors', "{{$setting['color']}}");
-            document.body.style.setProperty('--sizes', "{{$setting['font_size']}}");
+            document.body.style.setProperty('--color', "{{$setting['color']}}");
+            document.body.style.setProperty('--size', "{{$setting['font_size']}}");
             window.option = "{{$setting['column_option']}}";
             window.size = "{{$setting['font_size']}}";
             window.color = "{{$setting['color']}}";
+            window.color_min = "{{$setting['color_min']}}";
+            window.color_max = "{{$setting['color_max']}}";
+            window.clarity_min = "{{$setting['clarity_min']}}";
+            window.clarity_max = "{{$setting['clarity_max']}}";
         </script>
     @endif
     <!-- <div class="row">

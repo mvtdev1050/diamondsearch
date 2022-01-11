@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useEffect, useState } from "react";
 import {
     AppProvider, DescriptionList, Card, TextField, ColorPicker, Select, Button, hsbToRgb, rgbToHsb, rgbString, FormLayout, Modal, PageActions, Layout, Loading, Page
 } from "@shopify/polaris";
@@ -15,6 +15,14 @@ import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Slider, { SliderTooltip } from 'rc-slider';
+Object.prototype.getkeybyvalue = function( value ) {
+    for( var prop in this ) {
+        if( this.hasOwnProperty( prop ) ) {
+             if( this[ prop ] === value )
+                 return prop;
+        }
+    }
+}
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
 const clarmark = {
@@ -67,17 +75,21 @@ const clarAlph = {
     90: 'IF',
 
 };
+if (window.size) { var size = window.size; } else { var size = '14px'; }
+if (window.option) { var option = window.option; } else { var option = 'login'; }
+if (window.color) { var col = window.color; } else { var col = 'rgba(0,0,0,1)'; }
+if (window.color_min) { var color_min = colorAlph.getkeybyvalue(window.color_min);} else { var color_min = 0; }
+if (window.color_max) { var color_max = colorAlph.getkeybyvalue(window.color_max);} else { var color_max = 90; }
+if (window.clarity_min) { var clarity_min = clarAlph.getkeybyvalue(window.clarity_min); } else { var clarity_min = 0; }
+if (window.clarity_max) { var clarity_max = clarAlph.getkeybyvalue(window.clarity_max); } else { var clarity_max = 90; }
 export default function Form() {
     const config = { apiKey: API_KEY, host: btoa(STORE_NAME) };
-    if (window.size) { var size = window.size; } else { var size = '14px'; }
-    if (window.option) { var option = window.option; } else { var option = 'login'; }
-    if (window.color) { var col = window.color; } else { var col = 'rgba(0,0,0,1)'; }
     const [sizeValue, setSizeValue] = useState(size);
     const [priceOption, setPriceOption] = useState(option);
     const rgbVal = col.replace(/[^\d*.?\d*,]/g, "").split(",");
     const [range, setRange] = useState({
-        color: [0, 90],
-        clarity: [0, 90],
+        color: [color_min,color_max],
+        clarity: [clarity_min,clarity_max],
     });
     const [color, setColor] = useState(
         rgbToHsb({
@@ -133,30 +145,6 @@ export default function Form() {
         { label: '16px', value: '16px' },
         { label: '17px', value: '17px' },
         { label: '18px', value: '18px' },
-    ];
-    const colorOptions = [
-        { label: 'D', value: 'D' },
-        { label: 'E', value: 'E' },
-        { label: 'F', value: 'F' },
-        { label: 'G', value: 'G' },
-        { label: 'H', value: 'H' },
-        { label: 'I', value: 'I' },
-        { label: 'J', value: 'J' },
-        { label: 'K', value: 'K' },
-        { label: 'M', value: 'M' },
-    ];
-    const clarityOptions = [
-        { label: 'I3', value: 'I3' },
-        { label: 'I2', value: 'I2' },
-        { label: 'I1', value: 'I1' },
-        { label: 'S13', value: 'S13' },
-        { label: 'S12', value: 'S12' },
-        { label: 'S11', value: 'S11' },
-        { label: 'VS2', value: 'VS2' },
-        { label: 'VS1', value: 'VS1' },
-        { label: 'VVS2', value: 'VVS2' },
-        { label: 'VVS1', value: 'VVS1' },
-        { label: 'IF', value: 'IF' },
     ];
     const { hue, brightness, saturation } = color;
     const rgb = hsbToRgb(hue / 360, saturation, brightness);
@@ -246,7 +234,7 @@ export default function Form() {
                                                 <p>Near Colorless</p>
                                             </div>
                                         </div>
-                                        <Range marks={colormark} min={0} max={90} step={10} defaultValue={range.color} onChange={(values) => handleRange(values, "color")} />
+                                        <Range marks={colormark} min={0}  max={90} step={10} defaultValue={range.color} onChange={(values) => handleRange(values, "color")} />
                                         <ul className="steps-labels">
                                             <li key={'D'}>D</li>
                                             <li key={'E'}>E</li>

@@ -458,12 +458,12 @@ background:#fff;
 }
 
 .table-info-inner h4 {
-    font-weight: 500;
+    font-weight: 600;
     font-size: 18px;
     background: #fafafa;
     padding: 16px 10px;
     text-align: center;
-    color: #000;
+    color: var(--color);
     margin-top: 0px;
     
 }

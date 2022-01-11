@@ -15,6 +15,14 @@ import {ToastContainer} from 'react-toastify';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+Object.prototype.getkeybyvalue = function( value ) {
+    for( var prop in this ) {
+        if( this.hasOwnProperty( prop ) ) {
+             if( this[ prop ] === value )
+                 return prop;
+        }
+    }
+}
 if (window.option){var option=window.option;} else{var option='Login';}
 if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
 const HOME_URL =window.home_url;
@@ -199,13 +207,30 @@ const columns = [
 ];
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
-
+if (window.color_min) { var color_min = colorAlph.getkeybyvalue(window.color_min);} else { var color_min = 0; }
+if (window.color_max) { var color_max = colorAlph.getkeybyvalue(window.color_max);} else { var color_max = 90; }
+if (window.clarity_min) { var clarity_min = clarAlph.getkeybyvalue(window.clarity_min); } else { var clarity_min = 0; }
+if (window.clarity_max) { var clarity_max = clarAlph.getkeybyvalue(window.clarity_max); } else { var clarity_max = 90; }
+const color_limit = {
+    enabled: true,
+    minStart: 27,
+    minEnd:45,
+    maxStart:63,
+    maxEnd: 81 
+};
+const clarity_limit = {
+    enabled: true,
+    minStart: 27,
+    minEnd:45,
+    maxStart:63,
+    maxEnd: 81 
+};
 export default function DiamondSearch() {
     const [range, setRange] = useState({
         carat: [0.02, 11.07],
         price: [64,341888],
-        color: [0, 90],
-        clarity: [0, 90],
+        color: [color_min,color_max],
+        clarity: [clarity_min,clarity_max],
         length: [1, 3],
         polish: [0, 100],
         table: [0, 100],
@@ -541,7 +566,7 @@ export default function DiamondSearch() {
                                 <p>Near Colorless</p>
                             </div>
                         </div>
-                        <Range marks={colormark} min={0} max={90} step={10}  defaultValue={range.color} onChange={(values) => handleRange(values, "color")}     />
+                        <Range allowCross={false} marks={colormark}  step={10} limit={color_limit} defaultValue={range.color} onChange={(values) => handleRange(values, "color")}     />
                         <ul className="steps-labels">
                             <li key={'D'}>D</li>
                             <li key={'E'}>E</li>
@@ -565,7 +590,7 @@ export default function DiamondSearch() {
                                 <p>Flawless</p>
                             </div>
                         </div>
-                        <Range marks={clarmark} min={0} max={90} step={9} defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")}     />
+                        <Range marks={clarmark} step={9} limit={clarity_limit} defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")}     />
                         <ul className="steps-labels">
                             <li key={'I3'}>I3</li>
                             <li key={'I2'}>12</li>
