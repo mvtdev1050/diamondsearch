@@ -9,16 +9,17 @@ import StaticTable from './Table';
 import DiamondHeader from '../Frontend/DiamondHeader';
 
 const marks = {
-    9: '',
-    18: '',
-    27: '',
-    36: '',
-    45: '',
-    54: '',
-    63: '',
-    72: '',
-    81: '',
+    0: '',
+    10: '',
+    20: '',
+    30: '',
+    40: '',
+    50: '',
+    60: '',
+    70: '',
+    80: '',
     90: '',
+    100:'',
 };
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);

@@ -15,14 +15,10 @@ import {ToastContainer} from 'react-toastify';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-Object.prototype.getkeybyvalue = function( value ) {
-    for( var prop in this ) {
-        if( this.hasOwnProperty( prop ) ) {
-             if( this[ prop ] === value )
-                 return prop;
-        }
-    }
-}
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+  }
+  
 if (window.option){var option=window.option;} else{var option='Login';}
 if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
 const HOME_URL =window.home_url;
@@ -83,19 +79,7 @@ const shapes = [
     }
 
 ];
-const clarmark = {
-    9: '',
-    18: '',
-    27: '',
-    36: '',
-    45: '',
-    54: '',
-    63: '',
-    72: '',
-    81: '',
-    90: '',
-}
-const colormark  = {
+const mark = {
     0: '',
     10: '',
     20: '',
@@ -106,7 +90,8 @@ const colormark  = {
     70: '',
     80: '',
     90: '',
-};
+    100:'',
+}
 const marksLetter = {
     25: '',
     50: '',
@@ -125,20 +110,22 @@ const colorAlph = {
     80: 'L',
     90: 'M',
 };
-const clarAlph = {
+const clarityAlph = {
     0: 'I3',
-    9: 'I2',
-    18: 'I1',
-    27: 'S13',
-    36: 'S12',
-    45: 'S11',
-    54: 'VS2',
-    63: 'VS1',
-    72: 'VVS2',
-    81: 'VVS1',
-    90: 'IF',
+    10: 'I2',
+    20: 'I1',
+    30: 'S13',
+    40: 'S12',
+    50: 'S11',
+    60: 'VS2',
+    70: 'VS1',
+    80: 'VVS2',
+    90: 'VVS1',
+    99: 'IF',
 
 };
+const colorLimit = ['D','E','F','G','H','I','J','K','L','M'];
+const clarityLimit = ['I3','I2','I1','S13','S12','S11','VS2','VS1','VVS2','VVS1','IF'];
 const grade = {
     0: 'FAIR',
     25: 'FAIR',
@@ -207,24 +194,10 @@ const columns = [
 ];
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
-if (window.color_min) { var color_min = colorAlph.getkeybyvalue(window.color_min);} else { var color_min = 0; }
-if (window.color_max) { var color_max = colorAlph.getkeybyvalue(window.color_max);} else { var color_max = 90; }
-if (window.clarity_min) { var clarity_min = clarAlph.getkeybyvalue(window.clarity_min); } else { var clarity_min = 0; }
-if (window.clarity_max) { var clarity_max = clarAlph.getkeybyvalue(window.clarity_max); } else { var clarity_max = 90; }
-const color_limit = {
-    enabled: true,
-    minStart: 27,
-    minEnd:45,
-    maxStart:63,
-    maxEnd: 81 
-};
-const clarity_limit = {
-    enabled: true,
-    minStart: 27,
-    minEnd:45,
-    maxStart:63,
-    maxEnd: 81 
-};
+if (window.color_min) { var color_min = getKeyByValue(colorAlph,window.color_min);} else { var color_min = 0; }
+if (window.color_max) { var color_max = getKeyByValue(colorAlph,window.color_max);} else { var color_max = 100; }
+if (window.clarity_min) { var clarity_min = getKeyByValue(clarityAlph,window.clarity_min); } else { var clarity_min = 0; }
+if (window.clarity_max) { var clarity_max = getKeyByValue(clarityAlph,window.clarity_max); } else { var clarity_max = 100; }
 export default function DiamondSearch() {
     const [range, setRange] = useState({
         carat: [0.02, 11.07],
@@ -411,8 +384,8 @@ export default function DiamondSearch() {
     
                 color_from: colorAlph[range.color[0]],
                 color_to: colorAlph[range.color[1]],
-                clarity_from: clarAlph[range.clarity[1]],
-                clarity_to: clarAlph[range.clarity[0]],
+                clarity_from: clarityAlph[range.clarity[1]],
+                clarity_to: clarityAlph[range.clarity[0]],
                 polish_from: grade[range.polish[0]],
                 polish_to: grade[range.polish[1]],
                 symmetry_from: grade[range.symmetry[0]],
@@ -501,6 +474,7 @@ export default function DiamondSearch() {
             console.log('error: ', err);
         }
     };
+    
     useEffect(()=>{ 
         setLoader("cust-loader");
         hoverChange(12000);
@@ -566,18 +540,22 @@ export default function DiamondSearch() {
                                 <p>Near Colorless</p>
                             </div>
                         </div>
-                        <Range allowCross={false} marks={colormark}  step={10} limit={color_limit} defaultValue={range.color} onChange={(values) => handleRange(values, "color")}     />
+                        <Range  marks={mark} min={color_min} max={90} step={10} defaultValue={range.color} onChange={(values) => handleRange(values, "color")}     />
+
                         <ul className="steps-labels">
-                            <li key={'D'}>D</li>
-                            <li key={'E'}>E</li>
-                            <li key={'F'}>F</li>
-                            <li key={'G'}>G</li>
-                            <li key={'H'}>H</li>
-                            <li key={'I'}>I</li>
-                            <li key={'J'}>J</li>
-                            <li key={'K'}>K</li>
-                            <li key={'L'}>L</li>
-                            <li key={'M'}>M</li>
+                        {colorLimit.map(function(number,i){
+                            var num=getKeyByValue(colorAlph,number);
+                            if (num < color_min){
+                                return ;
+                            }
+                            // else if (num > color_max){
+                            //     return ;
+                            // }
+                            else{
+                                return <li key={number}>{number}</li>
+                            }
+                        })
+                        }
                         </ul>
                     </div>
                     <div className="inner-range-options clarity-slider">
@@ -590,19 +568,21 @@ export default function DiamondSearch() {
                                 <p>Flawless</p>
                             </div>
                         </div>
-                        <Range marks={clarmark} step={9} limit={clarity_limit} defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")}     />
+                        <Range marks={mark}  step={10} min={clarity_min} max={100}  defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")}     />
                         <ul className="steps-labels">
-                            <li key={'I3'}>I3</li>
-                            <li key={'I2'}>12</li>
-                            <li key={'I1'}>I1</li>
-                            <li key={'S13'}>S13</li>
-                            <li key={'S12'}>S12</li>
-                            <li key={'S11'}>S11</li>
-                            <li key={'VS2'}>VS2</li>
-                            <li key={'VS1'}>VS1</li>
-                            <li key={'VVS2'}>VVS2</li>
-                            <li key={'VVS1'}>VVS1</li>
-                            <li key={'IF'}>IF</li>
+                        {clarityLimit.map(function(numbers,j){
+                            var nums=getKeyByValue(clarityAlph,numbers);
+                            if (nums < clarity_min){
+                                return '';
+                            }
+                            // else if (nums > clarity_max){
+                            //     return '';
+                            // }
+                            else{
+                                return <li key={numbers}>{numbers}</li>
+                            }
+                        })
+                        }   
                         </ul>
                     </div>
                 </div>

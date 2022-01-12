@@ -706,3 +706,8 @@ body.ReactModal__Body--open {
 .admin-range {
     width: 99%;
 }
+.rc-slider-mark-text{
+    display:inline-block;
+    font-size: 14px;
+    color: var(--color);
+}

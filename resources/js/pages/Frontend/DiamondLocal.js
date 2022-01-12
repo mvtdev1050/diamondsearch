@@ -15,6 +15,10 @@ import {ToastContainer} from 'react-toastify';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+  }
+  
 if (window.option){var option=window.option;} else{var option='Login';}
 if(option=='view'){var option_text='View Product';}else if(option=='call'){var option_text='Call Now';}else{var option_text='Login For Price';}
 const HOME_URL =window.home_url;
@@ -75,30 +79,6 @@ const shapes = [
     }
 
 ];
-const clarmark = {
-    9: '',
-    18: '',
-    27: '',
-    36: '',
-    45: '',
-    54: '',
-    63: '',
-    72: '',
-    81: '',
-    90: '',
-}
-const colormark  = {
-    0: '',
-    10: '',
-    20: '',
-    30: '',
-    40: '',
-    50: '',
-    60: '',
-    70: '',
-    80: '',
-    90: '',
-};
 const marksLetter = {
     25: '',
     50: '',
@@ -117,18 +97,20 @@ const colorAlph = {
     80: 'L',
     90: 'M',
 };
-const clarAlph = {
+
+
+const clarityAlph = {
     0: 'I3',
-    9: 'I2',
-    18: 'I1',
-    27: 'S13',
-    36: 'S12',
-    45: 'S11',
-    54: 'VS2',
-    63: 'VS1',
-    72: 'VVS2',
-    81: 'VVS1',
-    90: 'IF',
+    10: 'I2',
+    20: 'I1',
+    30: 'S13',
+    40: 'S12',
+    50: 'S11',
+    60: 'VS2',
+    70: 'VS1',
+    80: 'VVS2',
+    90: 'VVS1',
+    100: 'IF',
 
 };
 const grade = {
@@ -199,13 +181,16 @@ const columns = [
 ];
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
-
+if (window.color_min) { var color_min = getKeyByValue(colorAlph,window.color_min);} else { var color_min = 0; }
+if (window.color_max) { var color_max = getKeyByValue(colorAlph,window.color_max);} else { var color_max = 100; }
+if (window.clarity_min) { var clarity_min = getKeyByValue(clarityAlph,window.clarity_min); } else { var clarity_min = 0; }
+if (window.clarity_max) { var clarity_max = getKeyByValue(clarityAlph,window.clarity_max); } else { var clarity_max = 100; }
 export default function DiamondLocal() {
     const [range, setRange] = useState({
         carat: [0.02, 11.07],
         price: [64,341888],
-        color: [0, 90],
-        clarity: [0, 90],
+        color: [color_min,color_max],
+        clarity: [clarity_min,clarity_max],
         length: [1, 3],
         polish: [0, 100],
         table: [0, 100],
@@ -386,8 +371,8 @@ export default function DiamondLocal() {
     
                 color_from: colorAlph[range.color[0]],
                 color_to: colorAlph[range.color[1]],
-                clarity_from: clarAlph[range.clarity[1]],
-                clarity_to: clarAlph[range.clarity[0]],
+                clarity_from: clarityAlph[range.clarity[1]],
+                clarity_to: clarityAlph[range.clarity[0]],
                 polish_from: grade[range.polish[0]],
                 polish_to: grade[range.polish[1]],
                 symmetry_from: grade[range.symmetry[0]],
@@ -476,6 +461,7 @@ export default function DiamondLocal() {
             console.log('error: ', err);
         }
     };
+    
     useEffect(()=>{ 
         setLoader("cust-loader");
         hoverChange(12000);
@@ -541,19 +527,8 @@ export default function DiamondLocal() {
                                 <p>Near Colorless</p>
                             </div>
                         </div>
-                        <Range marks={colormark} min={0} max={90} step={10}  defaultValue={range.color} onChange={(values) => handleRange(values, "color")}     />
-                        <ul className="steps-labels">
-                            <li key={'D'}>D</li>
-                            <li key={'E'}>E</li>
-                            <li key={'F'}>F</li>
-                            <li key={'G'}>G</li>
-                            <li key={'H'}>H</li>
-                            <li key={'I'}>I</li>
-                            <li key={'J'}>J</li>
-                            <li key={'K'}>K</li>
-                            <li key={'L'}>L</li>
-                            <li key={'M'}>M</li>
-                        </ul>
+                        <Range  marks={colorAlph} min={0} max={90} step={10} defaultValue={range.color} onChange={(values) => handleRange(values, "color")}     />
+
                     </div>
                     <div className="inner-range-options clarity-slider">
                         <h3 className="option-title uppercase">CLARITY</h3>
@@ -565,20 +540,7 @@ export default function DiamondLocal() {
                                 <p>Flawless</p>
                             </div>
                         </div>
-                        <Range marks={clarmark} min={0} max={90} step={9} defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")}     />
-                        <ul className="steps-labels">
-                            <li key={'I3'}>I3</li>
-                            <li key={'I2'}>12</li>
-                            <li key={'I1'}>I1</li>
-                            <li key={'S13'}>S13</li>
-                            <li key={'S12'}>S12</li>
-                            <li key={'S11'}>S11</li>
-                            <li key={'VS2'}>VS2</li>
-                            <li key={'VS1'}>VS1</li>
-                            <li key={'VVS2'}>VVS2</li>
-                            <li key={'VVS1'}>VVS1</li>
-                            <li key={'IF'}>IF</li>
-                        </ul>
+                        <Range marks={clarityAlph}  step={10} min={0} max={100}  defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")}     />
                     </div>
                 </div>
                 <div className="advance-search">

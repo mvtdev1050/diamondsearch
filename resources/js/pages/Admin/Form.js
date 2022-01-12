@@ -15,14 +15,9 @@ import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Slider, { SliderTooltip } from 'rc-slider';
-Object.prototype.getkeybyvalue = function( value ) {
-    for( var prop in this ) {
-        if( this.hasOwnProperty( prop ) ) {
-             if( this[ prop ] === value )
-                 return prop;
-        }
-    }
-}
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+  }
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
 const clarmark = {
@@ -61,27 +56,27 @@ const colorAlph = {
     80: 'L',
     90: 'M',
 };
-const clarAlph = {
+const clarityAlph = {
     0: 'I3',
-    9: 'I2',
-    18: 'I1',
-    27: 'S13',
-    36: 'S12',
-    45: 'S11',
-    54: 'VS2',
-    63: 'VS1',
-    72: 'VVS2',
-    81: 'VVS1',
-    90: 'IF',
+    10: 'I2',
+    20: 'I1',
+    30: 'S13',
+    40: 'S12',
+    50: 'S11',
+    60: 'VS2',
+    70: 'VS1',
+    80: 'VVS2',
+    90: 'VVS1',
+    99: 'IF',
 
 };
 if (window.size) { var size = window.size; } else { var size = '14px'; }
 if (window.option) { var option = window.option; } else { var option = 'login'; }
 if (window.color) { var col = window.color; } else { var col = 'rgba(0,0,0,1)'; }
-if (window.color_min) { var color_min = colorAlph.getkeybyvalue(window.color_min);} else { var color_min = 0; }
-if (window.color_max) { var color_max = colorAlph.getkeybyvalue(window.color_max);} else { var color_max = 90; }
-if (window.clarity_min) { var clarity_min = clarAlph.getkeybyvalue(window.clarity_min); } else { var clarity_min = 0; }
-if (window.clarity_max) { var clarity_max = clarAlph.getkeybyvalue(window.clarity_max); } else { var clarity_max = 90; }
+if (window.color_min) { var color_min = getKeyByValue(colorAlph,window.color_min);} else { var color_min = 0; }
+if (window.color_max) { var color_max = getKeyByValue(colorAlph,window.color_max);} else { var color_max = 99; }
+if (window.clarity_min) { var clarity_min = getKeyByValue(clarityAlph,window.clarity_min); } else { var clarity_min = 0; }
+if (window.clarity_max) { var clarity_max = getKeyByValue(clarityAlph,window.clarity_max); } else { var clarity_max = 99; }
 export default function Form() {
     const config = { apiKey: API_KEY, host: btoa(STORE_NAME) };
     const [sizeValue, setSizeValue] = useState(size);
@@ -174,8 +169,8 @@ export default function Form() {
             column_option: priceOption,
             color_min: colorAlph[range.color[0]],
             color_max: colorAlph[range.color[1]],
-            clarity_min: clarAlph[range.clarity[1]],
-            clarity_max: clarAlph[range.clarity[0]],
+            clarity_min: clarAlph[range.clarity[0]],
+            clarity_max: clarAlph[range.clarity[1]],
 
         }
         const url = HOME_URL + 'backend/save-setting';
@@ -262,7 +257,7 @@ export default function Form() {
                                                 <p>Flawless</p>
                                             </div>
                                         </div>
-                                        <Range marks={clarmark} min={0} max={90} step={9} defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")} />
+                                        <Range marks={clarmark} min={0} max={100} step={10} defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")} />
                                         <ul className="steps-labels">
                                             <li key={'I3'}>I3</li>
                                             <li key={'I2'}>12</li>

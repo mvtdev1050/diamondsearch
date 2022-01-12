@@ -21,6 +21,10 @@
             document.body.style.setProperty('--color', "{{$setting['color']}}");
             document.body.style.setProperty('--size', "{{$setting['font_size']}}");
             window.option="{{$setting['column_option']}}";
+            window.color_min = "{{$setting['color_min']}}";
+            window.color_max = "{{$setting['color_max']}}";
+            window.clarity_min = "{{$setting['clarity_min']}}";
+            window.clarity_max = "{{$setting['clarity_max']}}";
           </script>
       @endif 
     <div id="searchLocal"></div>
