@@ -195,115 +195,117 @@ export default function Form() {
             <Page title="Settings">
                 <Layout>
                     <Card sectioned>
-                        <FormLayout>
-                            <FormLayout.Group>
-                                <Select
-                                    label=" Font size :"
-                                    required="true"
-                                    name="size"
-                                    value={sizeValue}
-                                    options={sizeOptions}
-                                    onChange={handleSizeChange}
-                                />
-                            </FormLayout.Group>
-                            <FormLayout.Group>
-                                <Select
-                                    label="Price Column Option:"
-                                    required="true"
-                                    name="option"
-                                    options={columnOptions}
-                                    onChange={handlePriceOptionChange}
-                                    value={priceOption}
+                        <Form>
+                            <FormLayout>
+                                <FormLayout.Group>
+                                    <Select
+                                        label=" Font size :"
+                                        required="true"
+                                        name="size"
+                                        value={sizeValue}
+                                        options={sizeOptions}
+                                        onChange={handleSizeChange}
+                                    />
+                                </FormLayout.Group>
+                                <FormLayout.Group>
+                                    <Select
+                                        label="Price Column Option:"
+                                        required="true"
+                                        name="option"
+                                        options={columnOptions}
+                                        onChange={handlePriceOptionChange}
+                                        value={priceOption}
 
-                                />
-                            </FormLayout.Group>
-                            <FormLayout.Group>
-                                <div className='range-options color-range'>
-                                    <div className="inner-range-options color-slider admin-range">
-                                        <h3 className="option-title uppercase">COLOR</h3>
-                                        <div className="value-box">
-                                            <div className="value-left">
-                                                <p>Colorless</p>
-                                            </div>
-                                            <div className="value-right">
-                                                <p>Near Colorless</p>
-                                            </div>
-                                        </div>
-                                        <Range marks={colormark} min={0}  max={90} step={10} defaultValue={range.color} onChange={(values) => handleRange(values, "color")} />
-                                        <ul className="steps-labels">
-                                            <li key={'D'}>D</li>
-                                            <li key={'E'}>E</li>
-                                            <li key={'F'}>F</li>
-                                            <li key={'G'}>G</li>
-                                            <li key={'H'}>H</li>
-                                            <li key={'I'}>I</li>
-                                            <li key={'J'}>J</li>
-                                            <li key={'K'}>K</li>
-                                            <li key={'L'}>L</li>
-                                            <li key={'M'}>M</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </FormLayout.Group>
-                            <FormLayout.Group>
-                                <div className='range-options color-range'>
-                                    <div className="inner-range-options clarity-slider admin-range">
-                                        <h3 className="option-title uppercase">CLARITY</h3>
-                                        <div className="value-box">
-                                            <div className="value-left">
-                                                <p>Inclusion Visible at 10x Magnification</p>
-                                            </div>
-                                            <div className="value-right">
-                                                <p>Flawless</p>
-                                            </div>
-                                        </div>
-                                        <Range marks={clarmark} min={0} max={100} step={10} defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")} />
-                                        <ul className="steps-labels">
-                                            <li key={'I3'}>I3</li>
-                                            <li key={'I2'}>12</li>
-                                            <li key={'I1'}>I1</li>
-                                            <li key={'S13'}>S13</li>
-                                            <li key={'S12'}>S12</li>
-                                            <li key={'S11'}>S11</li>
-                                            <li key={'VS2'}>VS2</li>
-                                            <li key={'VS1'}>VS1</li>
-                                            <li key={'VVS2'}>VVS2</li>
-                                            <li key={'VVS1'}>VVS1</li>
-                                            <li key={'IF'}>IF</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </FormLayout.Group>
-                            <FormLayout.Group>
-                                <div className="color-pick">
-                                    <p style={{ padding: '20px 0px 0px 0px' }} className='option-title'> Color Picker for search page </p>
-                                    <ColorPicker
-                                        id="color-picker"
-                                        onChange={setColor}
-                                        color={color}
-                                        allowAlpha
                                     />
-                                    <DescriptionList
-                                        items={[
-                                            {
-                                                term: "Color",
-                                                description: (
-                                                    <TextField
-                                                        id="color-field"
-                                                        label="Color"
-                                                        labelHidden
-                                                        onChange={() => handleRgbChange}
-                                                        value={rgbaColor}
-                                                        prefix={<div style={divStyle} />}
-                                                    />
-                                                )
-                                            }
-                                        ]}
-                                    />
-                                </div>
-                                <div></div>
-                            </FormLayout.Group>
-                        </FormLayout>
+                                </FormLayout.Group>
+                                <FormLayout.Group>
+                                    <div className='range-options color-range'>
+                                        <div className="inner-range-options color-slider admin-range">
+                                            <h3 className="option-title uppercase">COLOR</h3>
+                                            <div className="value-box">
+                                                <div className="value-left">
+                                                    <p>Colorless</p>
+                                                </div>
+                                                <div className="value-right">
+                                                    <p>Near Colorless</p>
+                                                </div>
+                                            </div>
+                                            <Range marks={colormark} min={0}  max={90} step={10} defaultValue={range.color} onChange={(values) => handleRange(values, "color")} />
+                                            <ul className="steps-labels">
+                                                <li key={'D'}>D</li>
+                                                <li key={'E'}>E</li>
+                                                <li key={'F'}>F</li>
+                                                <li key={'G'}>G</li>
+                                                <li key={'H'}>H</li>
+                                                <li key={'I'}>I</li>
+                                                <li key={'J'}>J</li>
+                                                <li key={'K'}>K</li>
+                                                <li key={'L'}>L</li>
+                                                <li key={'M'}>M</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </FormLayout.Group>
+                                <FormLayout.Group>
+                                    <div className='range-options color-range'>
+                                        <div className="inner-range-options clarity-slider admin-range">
+                                            <h3 className="option-title uppercase">CLARITY</h3>
+                                            <div className="value-box">
+                                                <div className="value-left">
+                                                    <p>Inclusion Visible at 10x Magnification</p>
+                                                </div>
+                                                <div className="value-right">
+                                                    <p>Flawless</p>
+                                                </div>
+                                            </div>
+                                            <Range marks={clarmark} min={0} max={100} step={10} defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")} />
+                                            <ul className="steps-labels">
+                                                <li key={'I3'}>I3</li>
+                                                <li key={'I2'}>12</li>
+                                                <li key={'I1'}>I1</li>
+                                                <li key={'S13'}>S13</li>
+                                                <li key={'S12'}>S12</li>
+                                                <li key={'S11'}>S11</li>
+                                                <li key={'VS2'}>VS2</li>
+                                                <li key={'VS1'}>VS1</li>
+                                                <li key={'VVS2'}>VVS2</li>
+                                                <li key={'VVS1'}>VVS1</li>
+                                                <li key={'IF'}>IF</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </FormLayout.Group>
+                                <FormLayout.Group>
+                                    <div className="color-pick">
+                                        <p style={{ padding: '20px 0px 0px 0px' }} className='option-title'> Color Picker for search page </p>
+                                        <ColorPicker
+                                            id="color-picker"
+                                            onChange={setColor}
+                                            color={color}
+                                            allowAlpha
+                                        />
+                                        <DescriptionList
+                                            items={[
+                                                {
+                                                    term: "Color",
+                                                    description: (
+                                                        <TextField
+                                                            id="color-field"
+                                                            label="Color"
+                                                            labelHidden
+                                                            onChange={() => handleRgbChange}
+                                                            value={rgbaColor}
+                                                            prefix={<div style={divStyle} />}
+                                                        />
+                                                    )
+                                                }
+                                            ]}
+                                        />
+                                    </div>
+                                    <div></div>
+                                </FormLayout.Group>
+                            </FormLayout>
+                        </Form>
                         <ToastContainer autoClose={3000} />
                     </Card>
                     <Layout.Section>

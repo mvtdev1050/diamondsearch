@@ -127,45 +127,43 @@ class BackendController extends Controller
     public function addCart(Request $request)
     {
         $response='';
-        $base='';
         $diamond = $this->singleDiamond($request->diamond_id);
         if(!empty($diamond)){
             $data=array();
-            // switch($diamond['shape']){
-            //     case "Round":
-            //       $shape_img='round.jpg';
-            //       break;
-            //     case "Oval":
-            //       $shape_img='oval.jpg';
-            //       break;
-            //     case "Cushion Modified":
-            //       $shape_img='cushion.jpg';
-            //       break;
-            //     case "Princess":
-            //       $shape_img='princess.jpg';
-            //       break;
-            //     case "Emerald":
-            //       $shape_img='emerald.jpg';
-            //       break;
-            //     case "Pear":
-            //       $shape_img='pear.jpg';
-            //       break;
-            //     case "Marquise":
-            //       $shape_img='marquise.jpg';
-            //       break;
-            //     case "Asscher":
-            //       $shape_img='asscher.jpg';
-            //       break;
-            //     case "Radiant":
-            //       $shape_img='radiant.jpg';
-            //       break;
-            //     case "Heart":
-            //       $shape_img='heart.jpg';
-            //       break;
-            //     default:
-            //       $shape_img='round.jpg';
-            // }
-            // echo $base=base64_encode(file_get_contents($this->home_url.'img/'.$shape_img));
+            switch($diamond['shape']){
+                case "Round":
+                  $shape_img='round.jpg';
+                  break;
+                case "Oval":
+                  $shape_img='oval.jpg';
+                  break;
+                case "Cushion Modified":
+                  $shape_img='cushion.jpg';
+                  break;
+                case "Princess":
+                  $shape_img='princess.jpg';
+                  break;
+                case "Emerald":
+                  $shape_img='emerald.jpg';
+                  break;
+                case "Pear":
+                  $shape_img='pear.jpg';
+                  break;
+                case "Marquise":
+                  $shape_img='marquise.jpg';
+                  break;
+                case "Asscher":
+                  $shape_img='asscher.jpg';
+                  break;
+                case "Radiant":
+                  $shape_img='radiant.jpg';
+                  break;
+                case "Heart":
+                  $shape_img='heart.jpg';
+                  break;
+                default:
+                  $shape_img='round.jpg';
+            }
             $data['product']['title']=$diamond['size'].' Carats, '.$diamond['color'].' Color, '.$diamond['clarity'].' Clarity, '.$diamond['shape'].' Shaped Diamond';
             $data['product']['handle']=$diamond['diamond_id'].'-diamond';
             $data['product']['body_html']='Carat weight: '.$diamond['size'].', Shape: '. $diamond['shape'].', Color: '.$diamond['color'].', Clarity: '.$diamond['clarity'].', Price: '.$diamond['total_sales_price'].', Symmetry: '.$diamond['symmetry'].', Polish: '.$diamond['polish'].', Cut: '.$diamond['cut'].', Stock Number: '.$diamond['stock_num'].', Report: '.$diamond['cert_num'].', Length: '.$diamond['meas_length']. ', Width: '.$diamond['meas_width'].', Depth: '.$diamond['meas_depth']. ', Table Percent: '.$diamond['table_percent'].', Depth Percent: '.$diamond['depth_percent'].', Lab: '.$diamond['lab'];
@@ -188,10 +186,13 @@ class BackendController extends Controller
                     $resp = $this->hitApi('POST', $create_url, $header,json_encode($data));
                     if(!empty($resp->product->id)){
                         $product_id=$resp->product->id;
-                    //     $image['image']['src']=$this->home_url.'img/'.$shape_img;
-                    //     $img_url = "https://" . Session::get('storename') . "/admin/api/2021-10/products/".$product_id."/images.json";
-                    //     $img_res = $this->hitApi('POST', $img_url, $header,json_encode($image));
-                    //     print_r($img_res);
+                        $path = '/var/www/html/search/public/img/'.$shape_img;
+                        $img = file_get_contents($path);
+                        $base64 = base64_encode($img);
+                        $image['image']['position']=1;
+                        $image['image']['attachment']=$base64;
+                        $img_url = "https://" . Session::get('storename') . "/admin/api/2021-10/products/".$product_id."/images.json";
+                        $img_res = $this->hitApi('POST', $img_url, $header,json_encode($image));
                     }
                     if(!empty($resp->product->variants[0]->id)){
                         $variant_id=$resp->product->variants[0]->id;

@@ -79,6 +79,19 @@ const shapes = [
     }
 
 ];
+const mark = {
+    0: '',
+    10: '',
+    20: '',
+    30: '',
+    40: '',
+    50: '',
+    60: '',
+    70: '',
+    80: '',
+    90: '',
+    100: '',
+}
 const marksLetter = {
     25: '',
     50: '',
@@ -97,8 +110,6 @@ const colorAlph = {
     80: 'L',
     90: 'M',
 };
-
-
 const clarityAlph = {
     0: 'I3',
     10: 'I2',
@@ -110,9 +121,11 @@ const clarityAlph = {
     70: 'VS1',
     80: 'VVS2',
     90: 'VVS1',
-    100: 'IF',
+    99: 'IF',
 
 };
+const colorLimit = ['D','E','F','G','H','I','J','K','L','M'];
+const clarityLimit = ['I3','I2','I1','S13','S12','S11','VS2','VS1','VVS2','VVS1','IF'];
 const grade = {
     0: 'FAIR',
     25: 'FAIR',
@@ -181,11 +194,15 @@ const columns = [
 ];
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
-if (window.color_min) { var color_min = getKeyByValue(colorAlph,window.color_min);} else { var color_min = 0; }
-if (window.color_max) { var color_max = getKeyByValue(colorAlph,window.color_max);} else { var color_max = 100; }
-if (window.clarity_min) { var clarity_min = getKeyByValue(clarityAlph,window.clarity_min); } else { var clarity_min = 0; }
-if (window.clarity_max) { var clarity_max = getKeyByValue(clarityAlph,window.clarity_max); } else { var clarity_max = 100; }
+let color_min = 0;
+let color_max = 90;
+let clarity_min = 0;
+let clarity_max = 100; 
 export default function DiamondLocal() {
+    if (window.color_min) {  color_min = parseInt(getKeyByValue(colorAlph,window.color_min));} 
+    if (window.color_max) {  color_max = parseInt(getKeyByValue(colorAlph,window.color_max));} 
+    if (window.clarity_min) { clarity_min = parseInt(getKeyByValue(clarityAlph,window.clarity_min)); } 
+    if (window.clarity_max) { clarity_max = parseInt(getKeyByValue(clarityAlph,window.clarity_max)); }
     const [range, setRange] = useState({
         carat: [0.02, 11.07],
         price: [64,341888],
@@ -527,8 +544,23 @@ export default function DiamondLocal() {
                                 <p>Near Colorless</p>
                             </div>
                         </div>
-                        <Range  marks={colorAlph} min={0} max={90} step={10} defaultValue={range.color} onChange={(values) => handleRange(values, "color")}     />
+                        <Range  marks={mark} min={color_min} max={color_max} step={10} defaultValue={range.color} onChange={(values) => handleRange(values, "color")}     />
 
+                        <ul className="steps-labels">
+                        {colorLimit.map(function(number,i){
+                            var num=getKeyByValue(colorAlph,number);
+                            if (num < color_min){
+                                return ;
+                            }
+                            else if (num > color_max){
+                                return ;
+                            }
+                            else{
+                                return <li key={number}>{number}</li>
+                            }
+                        })
+                        }
+                        </ul>
                     </div>
                     <div className="inner-range-options clarity-slider">
                         <h3 className="option-title uppercase">CLARITY</h3>
@@ -540,7 +572,22 @@ export default function DiamondLocal() {
                                 <p>Flawless</p>
                             </div>
                         </div>
-                        <Range marks={clarityAlph}  step={10} min={0} max={100}  defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")}     />
+                        <Range marks={mark}  step={10} min={clarity_min} max={clarity_max}  defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")}     />
+                        <ul className="steps-labels">
+                        {clarityLimit.map(function(numbers,j){
+                            var nums=getKeyByValue(clarityAlph,numbers);
+                            if (nums < clarity_min){
+                                return '';
+                            }
+                            else if (nums > clarity_max){
+                                return '';
+                            }
+                            else{
+                                return <li key={numbers}>{numbers}</li>
+                            }
+                        })
+                        }   
+                        </ul>
                     </div>
                 </div>
                 <div className="advance-search">

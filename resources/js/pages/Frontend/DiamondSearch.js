@@ -90,7 +90,7 @@ const mark = {
     70: '',
     80: '',
     90: '',
-    100:'',
+    100: '',
 }
 const marksLetter = {
     25: '',
@@ -194,11 +194,15 @@ const columns = [
 ];
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
-if (window.color_min) { var color_min = getKeyByValue(colorAlph,window.color_min);} else { var color_min = 0; }
-if (window.color_max) { var color_max = getKeyByValue(colorAlph,window.color_max);} else { var color_max = 100; }
-if (window.clarity_min) { var clarity_min = getKeyByValue(clarityAlph,window.clarity_min); } else { var clarity_min = 0; }
-if (window.clarity_max) { var clarity_max = getKeyByValue(clarityAlph,window.clarity_max); } else { var clarity_max = 100; }
+let color_min = 0;
+let color_max = 90;
+let clarity_min = 0;
+let clarity_max = 100; 
 export default function DiamondSearch() {
+    if (window.color_min) {  color_min = parseInt(getKeyByValue(colorAlph,window.color_min));} 
+    if (window.color_max) {  color_max = parseInt(getKeyByValue(colorAlph,window.color_max));} 
+    if (window.clarity_min) { clarity_min = parseInt(getKeyByValue(clarityAlph,window.clarity_min)); } 
+    if (window.clarity_max) { clarity_max = parseInt(getKeyByValue(clarityAlph,window.clarity_max)); }
     const [range, setRange] = useState({
         carat: [0.02, 11.07],
         price: [64,341888],
@@ -251,7 +255,6 @@ export default function DiamondSearch() {
     );
     const handleRange = (values, name) => {
         setLoader("cust-loader");
-        setPending(true);
         const data = {
             ...range,
             [name]: values
@@ -351,7 +354,7 @@ export default function DiamondSearch() {
         setIsOpen(false);
     }
     const  handleSubmit= () => {
-       var data = {
+    let data = {
         store_id:STORE_ID,
         diamond_id:diamondID,
         firstname: firstName,
@@ -468,7 +471,6 @@ export default function DiamondSearch() {
                 })
             setCount(i);
             setTableData(rows);
-            setPending(false);
             setLoader("hidden");
         } catch (err) {
             console.log('error: ', err);
@@ -540,7 +542,7 @@ export default function DiamondSearch() {
                                 <p>Near Colorless</p>
                             </div>
                         </div>
-                        <Range  marks={mark} min={color_min} max={90} step={10} defaultValue={range.color} onChange={(values) => handleRange(values, "color")}     />
+                        <Range  marks={mark} min={color_min} max={color_max} step={10} defaultValue={range.color} onChange={(values) => handleRange(values, "color")}     />
 
                         <ul className="steps-labels">
                         {colorLimit.map(function(number,i){
@@ -548,9 +550,9 @@ export default function DiamondSearch() {
                             if (num < color_min){
                                 return ;
                             }
-                            // else if (num > color_max){
-                            //     return ;
-                            // }
+                            else if (num > color_max){
+                                return ;
+                            }
                             else{
                                 return <li key={number}>{number}</li>
                             }
@@ -568,16 +570,16 @@ export default function DiamondSearch() {
                                 <p>Flawless</p>
                             </div>
                         </div>
-                        <Range marks={mark}  step={10} min={clarity_min} max={100}  defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")}     />
+                        <Range marks={mark}  step={10} min={clarity_min} max={clarity_max}  defaultValue={range.clarity} onChange={(values) => handleRange(values, "clarity")}     />
                         <ul className="steps-labels">
                         {clarityLimit.map(function(numbers,j){
                             var nums=getKeyByValue(clarityAlph,numbers);
                             if (nums < clarity_min){
                                 return '';
                             }
-                            // else if (nums > clarity_max){
-                            //     return '';
-                            // }
+                            else if (nums > clarity_max){
+                                return '';
+                            }
                             else{
                                 return <li key={numbers}>{numbers}</li>
                             }
