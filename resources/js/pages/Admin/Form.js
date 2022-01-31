@@ -313,7 +313,7 @@ export default function Form() {
                     </Layout.Section>
                 </Layout>
             </Page>
-        </div >
+        </div>
     );
     return (
         <Provider config={config} >

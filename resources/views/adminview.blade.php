@@ -23,7 +23,7 @@
 </head>
 
 <body> <script>
-        window.home_url="{{env('HOME_URL')}}";
+             window.home_url="http://localhost:8000/";
         window.api_key="{{env('SHOPIFY_API_KEY')}}";
         window.storename = "{{Session::get('storename')}}";
         window.store_id = "{{Session::get('store_id')}}";
@@ -41,18 +41,9 @@
             window.clarity_max = "{{$setting['clarity_max']}}";
         </script>
     @endif
-    <!-- <div class="row">
-        <div class="col-md-7">
-            <div id="dashboard">
-            </div>
-        </div>
-        <div class="col-md-5">
-            <div id="layout-form">
-            </div>
-        </div>
-    </div> -->
+
     <div id="layout-form">
-            </div>
+    </div>
     <script src="js/app.js"> </script>
 </body>
 

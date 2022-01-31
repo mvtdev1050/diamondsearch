@@ -711,3 +711,10 @@ body.ReactModal__Body--open {
     font-size: 14px;
     color: var(--color);
 }
+.error_msg::before {
+    display: inline;
+    content: "⚠ ";
+}
+.error_msg{
+color: #c0060f;
+}

@@ -5,6 +5,41 @@
 body {
     background: #fff;
 }
+@media (min-width: 576px) {
+    .cust-container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .cust-container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .cust-container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .cust-container {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 1500px) {
+    .cust-container {
+        max-width: 1200px;
+    }
+}
+
+.cust-container {
+    width: 100%;
+    margin: 0 auto;
+}
+
 div#searchProduct,div#searchProduct p,div#searchProduct ul li {
     font-size:var(--size);
     color:var(--color);
